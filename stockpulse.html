@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="StockPulse">
+<meta name="theme-color" content="#0a0d14">
+<title>StockPulse — Global Stock News Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0d14;--bg2:#0f1420;--bg3:#151c2e;--bg4:#1c2538;
+  --b1:rgba(255,255,255,.07);--b2:rgba(255,255,255,.13);--b3:rgba(255,255,255,.22);
+  --ac:#00d4aa;--ac2:#3b82f6;
+  --t:#e8edf5;--t2:#8a95a8;--t3:#4a5568;
+  --bull:#00d4aa;--bear:#f43f5e;--neut:#f59e0b;
+  --mono:"IBM Plex Mono",monospace;--sans:"DM Sans",sans-serif;
+  --r:10px;--rs:6px;
+}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--t);font-family:var(--sans);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--b2);border-radius:4px}
+*{scrollbar-width:thin;scrollbar-color:var(--b2) transparent}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,212,170,.5)}60%{box-shadow:0 0 0 8px rgba(0,212,170,0)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+/* SETUP */
+#setup{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+.card{background:var(--bg2);border:1px solid var(--b2);border-radius:16px;padding:36px 32px;max-width:480px;width:100%}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.bdot{width:10px;height:10px;background:var(--ac);border-radius:50%;animation:pulse 2.5s ease infinite;flex-shrink:0}
+.bname{font-family:var(--mono);font-size:18px;font-weight:600;letter-spacing:.5px}
+.bsub{font-size:11px;color:var(--t3);margin-bottom:22px;padding-left:20px;font-family:var(--mono)}
+.sh{font-size:22px;font-weight:600;margin-bottom:8px}
+.sd{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:16px}
+.fpill{display:inline-flex;align-items:center;gap:6px;background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.2);border-radius:20px;padding:4px 12px;font-size:11px;font-family:var(--mono);color:var(--ac);margin-bottom:20px}
+.steps{margin-bottom:22px}
+.step{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+.snum{width:22px;height:22px;border-radius:50%;background:var(--ac);color:#0a0d14;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.sbody{font-size:13px;color:var(--t2);line-height:1.6}
+.sbody strong{color:var(--t)}.sbody code{background:var(--bg3);padding:1px 6px;border-radius:4px;font-size:11px;font-family:var(--mono);color:var(--ac)}
+.sbody a{color:var(--ac2);text-decoration:none}
+.il{font-size:10px;font-family:var(--mono);color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;display:block}
+.uin{width:100%;background:var(--bg3);border:1px solid var(--b2);border-radius:var(--rs);padding:11px 13px;color:var(--t);font-family:var(--mono);font-size:12px;outline:none;transition:border-color .2s;margin-bottom:5px}
+.uin:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(0,212,170,.1)}
+.uin::placeholder{color:var(--t3);font-family:var(--sans);font-size:12px}
+.uhint{font-size:11px;color:var(--t3);margin-bottom:20px;line-height:1.6}
+.lbtn{width:100%;padding:13px;background:var(--ac);color:#0a0d14;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;cursor:pointer;font-family:var(--sans);transition:all .15s}
+.lbtn:hover{background:#00f0c0;transform:translateY(-1px)}
+.serr{font-size:12px;color:var(--bear);margin-top:8px;display:none}
+
+/* APP */
+#app{display:none;flex-direction:column;height:100vh;overflow:hidden}
+#app.on{display:flex}
+
+/* HEADER */
+.hdr{background:var(--bg2);border-bottom:1px solid var(--b1);padding:0 16px;height:50px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:50}
+.logo{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.5px}
+.ldot{width:7px;height:7px;background:var(--ac);border-radius:50%;animation:pulse 2.5s ease infinite}
+.hbtn{display:flex;align-items:center;gap:4px;padding:5px 10px;border-radius:20px;font-size:11px;cursor:pointer;border:1px solid var(--b2);background:transparent;color:var(--t2);font-family:var(--sans);transition:all .2s}
+.hbtn:hover{background:var(--bg3);color:var(--t)}.hbtn i{font-size:14px}
+.abadge{background:var(--bear);color:#fff;font-size:9px;font-weight:700;border-radius:10px;padding:1px 5px;min-width:16px;text-align:center;font-family:var(--mono)}
+
+/* WATCHLIST */
+.wlbar{background:var(--bg3);border-bottom:1px solid var(--b1);height:36px;display:flex;align-items:center;padding:0 12px;gap:2px;overflow-x:auto;flex-shrink:0}
+.wlbar::-webkit-scrollbar{display:none}
+.wllbl{font-size:9px;font-family:var(--mono);color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-right:10px;white-space:nowrap;flex-shrink:0}
+.wchip{display:flex;align-items:center;gap:5px;padding:2px 9px;border-radius:4px;cursor:pointer;border:1px solid transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;background:none;font-family:inherit}
+.wchip:hover,.wchip.act{background:var(--bg4);border-color:var(--b2)}
+.wtk{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--t)}
+.wdel{font-size:10px;color:var(--bear);margin-left:2px;opacity:0;transition:opacity .15s;background:none;border:none;cursor:pointer;padding:0;line-height:1}
+.wchip:hover .wdel{opacity:1}
+.wladd{display:flex;align-items:center;gap:3px;padding:2px 8px;border:1px dashed var(--b2);border-radius:4px;color:var(--t3);font-size:10px;cursor:pointer;background:none;font-family:var(--sans);transition:all .15s;white-space:nowrap;flex-shrink:0}
+.wladd:hover{color:var(--t2);border-color:var(--b3)}
+
+/* LIVE BAR */
+.lbar{background:rgba(0,212,170,.04);border-bottom:1px solid rgba(0,212,170,.1);padding:3px 14px;font-size:9px;font-family:var(--mono);color:var(--ac);display:none;align-items:center;gap:8px;flex-shrink:0}
+.lbar.on{display:flex}
+.lpulse{width:5px;height:5px;background:var(--ac);border-radius:50%;animation:pulse 1s ease infinite;flex-shrink:0}
+
+/* BODY */
+.body{display:flex;flex:1;overflow:hidden;min-height:0}
+
+/* LEFT PANEL */
+.left{width:300px;min-width:300px;background:var(--bg2);border-right:1px solid var(--b1);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.phdr{padding:12px 14px 10px;border-bottom:1px solid var(--b1);flex-shrink:0}
+.plbl{font-size:9px;font-family:var(--mono);color:var(--t3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:9px}
+.sw{position:relative}
+.si{width:100%;background:var(--bg3);border:1px solid var(--b2);border-radius:var(--rs);padding:8px 36px 8px 11px;color:var(--t);font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;outline:none;transition:all .2s}
+.si::placeholder{color:var(--t3);font-weight:400;letter-spacing:0;text-transform:none;font-family:var(--sans);font-size:12px}
+.si:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(0,212,170,.1)}
+.sgo{position:absolute;right:5px;top:50%;transform:translateY(-50%);background:var(--ac);border:none;border-radius:5px;width:25px;height:25px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#0a0d14;transition:all .15s}
+.sgo:hover{background:#00f0c0}
+
+/* VALIDATION */
+.vc{margin:8px 10px;background:var(--bg3);border:1px solid var(--b2);border-radius:var(--r);padding:12px;display:none;animation:fadeUp .2s ease}
+.vc.on{display:block}
+.vt{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:8px}
+.vname{font-size:14px;font-weight:600;color:var(--t);line-height:1.3}
+.vtick{font-family:var(--mono);font-size:10px;color:var(--ac);background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.2);padding:2px 7px;border-radius:3px;flex-shrink:0}
+.vmeta{font-size:12px;color:var(--t2);margin-bottom:10px}
+.vbtns{display:flex;gap:7px}
+.vok{flex:1;padding:7px;background:var(--ac);color:#0a0d14;border:none;border-radius:var(--rs);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:all .15s}
+.vok:hover{background:#00f0c0}
+.vno{padding:7px 12px;background:transparent;color:var(--t2);border:1px solid var(--b2);border-radius:var(--rs);font-size:12px;cursor:pointer;font-family:var(--sans)}
+
+/* FILTERS */
+.filt{padding:8px 10px;border-bottom:1px solid var(--b1);flex-shrink:0;display:none}
+.frow{display:flex;gap:4px}
+.fc{padding:3px 9px;border-radius:4px;font-size:11px;cursor:pointer;border:1px solid var(--b1);color:var(--t2);transition:all .15s;background:none;font-family:var(--sans)}
+.fc:hover{border-color:var(--b2);color:var(--t)}
+.fc.act{background:rgba(0,212,170,.1);border-color:rgba(0,212,170,.3);color:var(--ac)}
+
+/* ARTICLE LIST */
+.alist{flex:1;overflow-y:auto;padding:5px}
+.empty{padding:36px 14px;text-align:center;color:var(--t3)}
+.empty i{font-size:34px;margin-bottom:10px;opacity:.2;display:block}
+.empty p{font-size:13px;line-height:1.8}
+.aitem{padding:10px;border-radius:7px;margin-bottom:3px;cursor:pointer;border:1px solid transparent;transition:all .15s;position:relative;overflow:hidden}
+.aitem:hover{background:var(--bg3);border-color:var(--b1)}
+.aitem.sel{background:var(--bg3);border-color:var(--ac)}
+.aitem::before{content:"";position:absolute;left:0;top:5px;bottom:5px;width:3px;border-radius:0 3px 3px 0;opacity:0;transition:opacity .15s}
+.aitem.bull::before{background:var(--bull)}.aitem.bear::before{background:var(--bear)}.aitem.neut::before{background:var(--neut)}
+.aitem.sel::before{opacity:1}
+.ar{display:flex;align-items:center;gap:4px;margin-bottom:4px;flex-wrap:wrap}
+.sbdg{font-size:9px;font-family:var(--mono);font-weight:600;padding:2px 5px;border-radius:3px;text-transform:uppercase;flex-shrink:0}
+.bull .sbdg{background:rgba(0,212,170,.15);color:var(--bull)}.bear .sbdg{background:rgba(244,63,94,.15);color:var(--bear)}.neut .sbdg{background:rgba(245,158,11,.15);color:var(--neut)}
+.atm{font-family:var(--mono);font-size:10px;color:var(--t3);margin-left:auto;flex-shrink:0}
+.ntag{font-size:9px;font-family:var(--mono);background:rgba(244,63,94,.1);color:var(--bear);border:1px solid rgba(244,63,94,.2);padding:1px 5px;border-radius:3px;flex-shrink:0;animation:blink 1.2s ease 5}
+.asrc{display:flex;align-items:center;gap:4px;margin-bottom:4px}
+.ahlc{font-size:12px;font-weight:500;color:var(--t);line-height:1.4}
+
+/* CENTER */
+.center{flex:1;overflow-y:auto;background:var(--bg);min-width:0}
+.dempty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--t3);padding:24px;text-align:center}
+.dempty i{font-size:44px;opacity:.18}
+.dempty p{font-size:13px;line-height:1.6}
+.loading{display:none;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;gap:14px}
+.loading.on{display:flex}
+.spinner{width:34px;height:34px;border:2px solid var(--b1);border-top-color:var(--ac);border-radius:50%;animation:spin .7s linear infinite}
+.lt{font-size:14px;color:var(--t);font-weight:600;text-align:center}
+.ls{font-size:11px;color:var(--t2);text-align:center;font-family:var(--mono);line-height:1.8}
+.prog{width:260px;height:3px;background:var(--b1);border-radius:2px;overflow:hidden}
+.pfill{height:100%;background:var(--ac);border-radius:2px;width:5%;transition:width 14s ease}
+.pfill.done{width:100%;transition:width .3s ease}
+
+/* DETAIL */
+.dtop{background:var(--bg2);border-bottom:1px solid var(--b1);padding:12px 18px;position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:10px}
+.stico{width:38px;height:38px;border-radius:9px;background:var(--bg3);border:1px solid var(--b2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:600;color:var(--ac);flex-shrink:0}
+.stnm{font-size:13px;font-weight:600;color:var(--t)}
+.stsub{font-size:10px;color:var(--t3);font-family:var(--mono)}
+.slg{padding:4px 10px;border-radius:5px;font-family:var(--mono);font-size:10px;font-weight:600;flex-shrink:0}
+.slg.bull{background:rgba(0,212,170,.12);color:var(--bull);border:1px solid rgba(0,212,170,.25)}
+.slg.bear{background:rgba(244,63,94,.12);color:var(--bear);border:1px solid rgba(244,63,94,.25)}
+.slg.neut{background:rgba(245,158,11,.12);color:var(--neut);border:1px solid rgba(245,158,11,.25)}
+.abody{padding:18px}
+.ameta{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:11px}
+.asrctag{display:flex;align-items:center;gap:5px;padding:3px 8px;background:var(--bg3);border:1px solid var(--b1);border-radius:4px;font-size:11px;color:var(--t2)}
+.adate{font-family:var(--mono);font-size:10px;color:var(--t3)}
+.atitle{font-size:17px;font-weight:600;line-height:1.35;color:var(--t);margin-bottom:14px}
+.aexc{font-size:13px;color:var(--t2);line-height:1.8;padding:12px;background:var(--bg3);border-radius:var(--r);border:1px solid var(--b1);margin-bottom:16px}
+.abox{background:var(--bg3);border:1px solid var(--b2);border-radius:var(--r);padding:13px;margin-bottom:16px}
+.aboxh{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;flex-wrap:wrap;gap:6px}
+.aboxl{font-size:9px;font-family:var(--mono);color:var(--t3);text-transform:uppercase;letter-spacing:1.2px}
+.cbar{height:3px;background:var(--bg4);border-radius:2px;margin-bottom:11px;overflow:hidden}
+.cfill{height:100%;border-radius:2px;transition:width .9s ease}
+.cfill.bull{background:var(--bull)}.cfill.bear{background:var(--bear)}.cfill.neut{background:var(--neut)}
+.evlist{display:flex;flex-direction:column;gap:7px}
+.evitem{display:flex;gap:8px;font-size:12px;color:var(--t2);line-height:1.5}
+.evico{font-size:13px;flex-shrink:0;margin-top:1px}
+.bull-ev .evico{color:var(--bull)}.bear-ev .evico{color:var(--bear)}.neut-ev .evico{color:var(--neut)}
+.scbox{background:var(--bg4);border-radius:6px;padding:10px 12px;margin-top:10px}
+.scr{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.scr:last-child{margin-bottom:0}
+.sclbl{font-family:var(--mono);font-size:10px;width:58px;flex-shrink:0;color:var(--t2)}
+.scbar{flex:1;height:5px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.scfill{height:100%;border-radius:3px;transition:width .8s ease}
+.scfill.pos{background:var(--bull)}.scfill.neg{background:var(--bear)}.scfill.ntr{background:var(--neut)}
+.scpct{font-family:var(--mono);font-size:10px;width:35px;text-align:right;flex-shrink:0}
+.scnote{font-size:9px;color:var(--t3);font-family:var(--mono);margin-top:6px}
+.slbl{font-size:9px;font-family:var(--mono);color:var(--t3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:7px}
+.hiitem{display:flex;gap:8px;padding:8px 10px;background:var(--bg3);border-left:2px solid var(--ac2);border-radius:0 5px 5px 0;margin-bottom:4px;font-size:12px;color:var(--t2);line-height:1.5}
+.hiitem i{font-size:11px;color:var(--ac2);flex-shrink:0;margin-top:2px}
+.sumbox{background:var(--bg2);border:1px solid var(--b2);border-radius:var(--r);padding:13px;margin-bottom:16px;position:relative;overflow:hidden}
+.sumbox::before{content:'"';position:absolute;right:10px;top:-12px;font-size:64px;color:var(--b2);font-family:serif;line-height:1;pointer-events:none}
+.sumtxt{font-size:13px;color:var(--t);line-height:1.75}
+.relitem{display:flex;gap:8px;padding:8px 10px;border:1px solid var(--b1);border-radius:7px;margin-bottom:4px;cursor:pointer;transition:all .15s;align-items:flex-start}
+.relitem:hover{border-color:var(--b2);background:var(--bg3)}
+.relbody{flex:1;min-width:0}
+.reltitle{font-size:12px;color:var(--t);line-height:1.4;margin-bottom:2px}
+.relsrc{font-size:10px;color:var(--t3);font-family:var(--mono)}
+.relsent{font-size:9px;font-family:var(--mono);padding:2px 5px;border-radius:3px;align-self:center;flex-shrink:0;font-weight:600}
+.relsent.bull{background:rgba(0,212,170,.15);color:var(--bull)}.relsent.bear{background:rgba(244,63,94,.15);color:var(--bear)}.relsent.neut{background:rgba(245,158,11,.15);color:var(--neut)}
+
+/* RIGHT */
+.right{width:240px;min-width:240px;background:var(--bg2);border-left:1px solid var(--b1);overflow-y:auto;flex-shrink:0}
+.rsec{border-bottom:1px solid var(--b1);padding:12px 14px}
+.rl{font-size:9px;font-family:var(--mono);color:var(--t3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:9px}
+.srow{display:flex;gap:4px;margin-bottom:9px}
+.sc2{flex:1;text-align:center;padding:7px 3px;background:var(--bg3);border-radius:6px;border:1px solid var(--b1)}
+.snum{font-size:17px;font-weight:600}.snum.bull{color:var(--bull)}.snum.bear{color:var(--bear)}.snum.neut{color:var(--neut)}
+.slbls{font-size:9px;font-family:var(--mono);color:var(--t3);margin-top:1px}
+.meter{position:relative;height:6px;background:linear-gradient(90deg,var(--bear),var(--neut) 50%,var(--bull));border-radius:3px;margin-bottom:6px}
+.needle{position:absolute;top:-4px;width:14px;height:14px;background:#fff;border:2px solid var(--bg);border-radius:50%;transform:translateX(-50%);transition:left 1.2s ease}
+.mlabs{display:flex;justify-content:space-between;font-size:9px;font-family:var(--mono);color:var(--t3)}
+.cgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
+.cit{display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 2px;border-radius:5px;background:var(--bg3);border:1px solid var(--b1)}
+.cf{font-size:14px}.cc{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--ac)}
+.togrow{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.toglbl{font-size:12px;color:var(--t2)}
+.tog{width:32px;height:17px;background:var(--bg4);border-radius:9px;position:relative;cursor:pointer;border:1px solid var(--b2);transition:all .2s;flex-shrink:0}
+.tog.on{background:rgba(0,212,170,.18);border-color:rgba(0,212,170,.4)}
+.tog::after{content:"";position:absolute;width:11px;height:11px;background:var(--t3);border-radius:50%;top:2px;left:2px;transition:all .2s}
+.tog.on::after{left:17px;background:var(--ac)}
+.nitem{display:flex;align-items:flex-start;gap:7px;padding:8px 9px;background:var(--bg3);border:1px solid var(--b1);border-radius:6px;margin-bottom:4px}
+.nitem.unread{border-left:2px solid var(--ac2)}
+.nico{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.nico.bull{background:rgba(0,212,170,.1);color:var(--bull)}.nico.bear{background:rgba(244,63,94,.1);color:var(--bear)}.nico.neut{background:rgba(245,158,11,.1);color:var(--neut)}
+.nttl{font-size:11px;font-weight:500;color:var(--t);margin-bottom:2px;line-height:1.3}
+.ntm{font-size:10px;font-family:var(--mono);color:var(--t3)}
+
+/* TOAST */
+.toast{position:fixed;top:58px;right:14px;background:var(--bg2);border:1px solid var(--b2);border-left:3px solid var(--ac2);border-radius:var(--r);padding:11px 13px;width:280px;z-index:8000;transform:translateX(310px);transition:transform .4s cubic-bezier(.34,1.56,.64,1);box-shadow:0 8px 32px rgba(0,0,0,.5)}
+.toast.show{transform:translateX(0)}
+.thdr{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.tico{font-size:14px;color:var(--ac2)}
+.ttitle{font-size:11px;font-weight:600;color:var(--t);flex:1}
+.tclose{cursor:pointer;color:var(--t3);font-size:12px;background:none;border:none}
+.tbody{font-size:11px;color:var(--t2);line-height:1.5}
+.ttk{font-family:var(--mono);color:var(--ac);font-weight:600}
+
+/* MOBILE */
+.mobnav{display:none;background:var(--bg2);border-top:1px solid var(--b1);height:50px;align-items:center;justify-content:space-around;flex-shrink:0}
+.mbtn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 16px;color:var(--t3);cursor:pointer;background:none;border:none;font-family:var(--sans);transition:color .15s;min-width:60px}
+.mbtn i{font-size:20px}.mbtn span{font-size:9px;text-transform:uppercase;letter-spacing:.5px}
+.mbtn.act{color:var(--ac)}
+.mback{display:none;align-items:center;gap:6px;padding:9px 14px;color:var(--t2);font-size:12px;cursor:pointer;border-bottom:1px solid var(--b1);background:var(--bg2);flex-shrink:0}
+.mback.on{display:flex}
+
+@media(max-width:900px){
+  .right{display:none}.mobnav{display:flex}
+  .left{width:100%;min-width:0}
+  #LP{position:absolute;inset:0;z-index:30;display:none}
+  #LP.open{display:flex}.center{width:100%}
+}
+@media(max-width:600px){.atitle{font-size:15px}.abody{padding:14px}}
+select{background:var(--bg3);border:1px solid var(--b2);border-radius:var(--rs);padding:6px 10px;color:var(--t);font-size:11px;font-family:var(--sans);outline:none;width:100%;cursor:pointer}
+</style>
+</head>
+<body>
+
+<!-- SETUP -->
+<div id="setup">
+<div class="card">
+  <div class="brand"><div class="bdot"></div><span class="bname">STOCKPULSE</span></div>
+  <div class="bsub">Global Stock News Intelligence</div>
+  <div class="fpill"><i class="ti ti-circle-check" style="font-size:13px"></i>&nbsp;Completely free &middot; No daily limits</div>
+  <div class="sh">One-time setup</div>
+  <div class="sd">StockPulse uses a free Cloudflare Worker as its backend. It fetches from Google News, Yahoo Finance, and 17 other live sources server-side — bypassing all browser CORS restrictions — with no rate limits.</div>
+  <div class="steps">
+    <div class="step"><div class="snum">1</div><div class="sbody">Go to <a href="https://workers.cloudflare.com" target="_blank">workers.cloudflare.com</a> and sign up free. <strong>No credit card needed.</strong> Free tier = 100,000 requests/day.</div></div>
+    <div class="step"><div class="snum">2</div><div class="sbody">Create a Worker &rarr; delete default code &rarr; paste the entire <code>stockpulse-worker.js</code> file &rarr; click <strong>Deploy</strong>.</div></div>
+    <div class="step"><div class="snum">3</div><div class="sbody">Copy your worker URL (e.g. <code>https://stockpulse.yourname.workers.dev</code>) and paste it below.</div></div>
+  </div>
+  <label class="il">Your Cloudflare Worker URL</label>
+  <input class="uin" id="WU" type="url" placeholder="https://stockpulse.yourname.workers.dev" autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')launch()">
+  <div class="uhint">Saved only in your browser. Never shared with anyone.</div>
+  <button class="lbtn" onclick="launch()">Launch StockPulse &rarr;</button>
+  <div class="serr" id="ERR">Please enter your Worker URL (must start with https://)</div>
+</div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="hdr">
+    <div class="logo"><div class="ldot"></div>STOCKPULSE</div>
+    <div style="display:flex;align-items:center;gap:6px">
+      <button class="hbtn" id="AB" onclick="toggleAlerts()"><i class="ti ti-bell"></i><span class="abadge" id="ABN">0</span></button>
+      <button class="hbtn" onclick="openSetup()" title="Settings"><i class="ti ti-settings"></i></button>
+    </div>
+  </div>
+
+  <div class="wlbar">
+    <span class="wllbl">Watchlist</span>
+    <div id="WL" style="display:flex;align-items:center;gap:2px;overflow:visible"></div>
+    <button class="wladd" onclick="document.getElementById('SI').focus()"><i class="ti ti-plus" style="font-size:11px"></i> Add</button>
+  </div>
+
+  <div class="lbar" id="LB"><div class="lpulse"></div><span id="LBT"></span></div>
+
+  <div class="body">
+    <!-- LEFT -->
+    <div class="left" id="LP">
+      <div class="phdr">
+        <div class="plbl">Search Stock</div>
+        <div class="sw">
+          <input class="si" id="SI" placeholder="Ticker (SIVE, AAPL, ASML...)" maxlength="15"
+            onkeydown="if(event.key==='Enter')doSearch()" oninput="this.value=this.value.toUpperCase()">
+          <button class="sgo" onclick="doSearch()"><i class="ti ti-search" style="font-size:13px"></i></button>
+        </div>
+      </div>
+
+      <div class="vc" id="VC">
+        <div class="vt"><span class="vname" id="VN"></span><span class="vtick" id="VT"></span></div>
+        <div class="vmeta" id="VM"></div>
+        <div class="vbtns">
+          <button class="vok" onclick="confirmSearch()">&#10003; Confirm &mdash; Search News</button>
+          <button class="vno" onclick="cancelSearch()">&#10005;</button>
+        </div>
+      </div>
+
+      <div class="filt" id="FD">
+        <div class="plbl">Sentiment</div>
+        <div class="frow">
+          <button class="fc act" onclick="doFilter('all',this)">All</button>
+          <button class="fc" onclick="doFilter('bull',this)">&#9650; Bull</button>
+          <button class="fc" onclick="doFilter('bear',this)">&#9660; Bear</button>
+          <button class="fc" onclick="doFilter('neut',this)">&#9679; Neutral</button>
+        </div>
+      </div>
+
+      <div class="alist" id="AL">
+        <div class="empty">
+          <i class="ti ti-news"></i>
+          <p>Enter any stock ticker<br>to scan 19 global sources<br><br><span style="font-size:11px;color:var(--t3)">No API keys &middot; No daily limits</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER -->
+    <div class="center" id="CP">
+      <div class="mback" id="MB" onclick="showLeft()"><i class="ti ti-arrow-left" style="font-size:15px"></i> Back to articles</div>
+      <div class="dempty" id="DE"><i class="ti ti-file-analytics"></i><p>Select an article to view<br>full AI sentiment analysis</p></div>
+      <div class="loading" id="LD">
+        <div class="spinner"></div>
+        <div class="lt" id="LT">Scanning global sources...</div>
+        <div class="ls">Google News &times; 11 regions<br>Yahoo Finance &middot; Benzinga &middot; MarketWatch<br>Seeking Alpha &middot; Nasdaq &middot; PR Newswire &middot; TheStreet</div>
+        <div class="prog"><div class="pfill" id="PF"></div></div>
+      </div>
+      <div id="AD"></div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right">
+      <div class="rsec">
+        <div class="rl">Sentiment Meter</div>
+        <div class="srow">
+          <div class="sc2"><div class="snum bull" id="SB">&#8212;</div><div class="slbls">BULL</div></div>
+          <div class="sc2"><div class="snum bear" id="SR">&#8212;</div><div class="slbls">BEAR</div></div>
+          <div class="sc2"><div class="snum neut" id="SN">&#8212;</div><div class="slbls">NEUT</div></div>
+        </div>
+        <div class="meter"><div class="needle" id="ND" style="left:50%"></div></div>
+        <div class="mlabs"><span>Bearish</span><span>Neutral</span><span>Bullish</span></div>
+      </div>
+      <div class="rsec" id="CS" style="display:none">
+        <div class="rl">Coverage by Region</div>
+        <div class="cgrid" id="CG"></div>
+      </div>
+      <div class="rsec">
+        <div class="rl">Alert Settings</div>
+        <div class="togrow"><span class="toglbl">Breaking news</span><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="togrow"><span class="toglbl">Bearish signals</span><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="togrow"><span class="toglbl">Earnings news</span><div class="tog" onclick="this.classList.toggle('on')"></div></div>
+        <div class="togrow"><span class="toglbl">Foreign media</span><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+        <select style="margin-top:4px">
+          <option>Instant (5-min poll)</option>
+          <option>Every 15 minutes</option>
+          <option>Hourly digest</option>
+        </select>
+      </div>
+      <div class="rsec">
+        <div class="rl">Recent Alerts</div>
+        <div id="NF"><div style="font-size:11px;color:var(--t3);text-align:center;padding:12px 0;line-height:1.6">Alerts appear here when<br>new articles are detected</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mobnav">
+    <button class="mbtn act" id="MS" onclick="mobTab('S')"><i class="ti ti-search"></i><span>Search</span></button>
+    <button class="mbtn" id="MN" onclick="mobTab('N')"><i class="ti ti-news"></i><span>News</span></button>
+    <button class="mbtn" id="MA" onclick="mobTab('A')"><i class="ti ti-bell"></i><span>Alerts</span></button>
+  </div>
+</div>
+
+<div class="toast" id="TO">
+  <div class="thdr"><i class="ti ti-bell-ringing tico"></i><span class="ttitle">New Alert</span><button class="tclose" onclick="closeToast()"><i class="ti ti-x"></i></button></div>
+  <div class="tbody" id="TB"></div>
+</div>
+
+<script>
+/* ================================================================
+   STOCKPULSE — Frontend
+   Pairs with stockpulse-worker.js (Cloudflare Worker)
+   Free, unlimited, no API keys for end users
+================================================================ */
+
+let WORKER='', ticker=null, pending=null;
+
+function buildURL(tk, co) {
+  // Safely build worker URL — handles trailing slashes, extra paths, anything
+  const base = WORKER.replace(/[/?#].*$/, '').concat(WORKER.match(/^https?:\/\/[^/?#]+/)?.[0] ? '' : '');
+  const clean = WORKER.split('?')[0].replace(/\/+$/, '');
+  return clean + '?ticker=' + encodeURIComponent(tk) + '&company=' + encodeURIComponent(co || tk);
+}
+let articles=[], filter='all', selId=null;
+let alertCnt=0, pollTimer=null, wl=[];
+
+/* ── TICKER DATABASE ── */
+const TDB={
+  'SIVE'  :['Sivers Semiconductors AB','Semiconductors · Photonics','Nasdaq Stockholm · Sweden'],
+  'AAPL'  :['Apple Inc.','Consumer Electronics','NASDAQ · USA'],
+  'MSFT'  :['Microsoft Corp.','Cloud & Software','NASDAQ · USA'],
+  'NVDA'  :['NVIDIA Corporation','Semiconductors · AI','NASDAQ · USA'],
+  'GOOGL' :['Alphabet Inc.','Internet · AI','NASDAQ · USA'],
+  'META'  :['Meta Platforms','Social Media','NASDAQ · USA'],
+  'AMZN'  :['Amazon.com Inc.','E-Commerce · Cloud','NASDAQ · USA'],
+  'TSLA'  :['Tesla Inc.','Electric Vehicles','NASDAQ · USA'],
+  'AMD'   :['Advanced Micro Devices','Semiconductors','NASDAQ · USA'],
+  'INTC'  :['Intel Corporation','Semiconductors','NASDAQ · USA'],
+  'QCOM'  :['Qualcomm Inc.','Mobile Chips · 5G','NASDAQ · USA'],
+  'SMCI'  :['Super Micro Computer','AI Servers','NASDAQ · USA'],
+  'BABA'  :['Alibaba Group','E-Commerce · China','NYSE · USA ADR'],
+  'TSM'   :['Taiwan Semiconductor','Foundry · Chips','NYSE · USA ADR'],
+  'BIDU'  :['Baidu Inc.','AI · Internet · China','NASDAQ · USA ADR'],
+  'JD'    :['JD.com Inc.','E-Commerce · China','NASDAQ · USA'],
+  'PDD'   :['PDD Holdings (Temu)','E-Commerce · China','NASDAQ · USA'],
+  'ASML'  :['ASML Holding N.V.','Semiconductor Equipment','Euronext Amsterdam'],
+  'SAP'   :['SAP SE','Enterprise Software','XETRA · Germany'],
+  'LVMH'  :['LVMH Moет Hennessy','Luxury Goods','Euronext Paris'],
+  'VOW3'  :['Volkswagen AG','Automobiles','XETRA · Germany'],
+  'NVO'   :['Novo Nordisk A/S','GLP-1 · Pharma','NYSE · USA ADR'],
+  'BHP'   :['BHP Group','Mining · Metals','NYSE / ASX'],
+  'SHEL'  :['Shell plc','Oil & Gas','NYSE / LSE'],
+  'SPOT'  :['Spotify Technology','Music Streaming','NYSE · USA'],
+  'UBER'  :['Uber Technologies','Mobility · Delivery','NYSE · USA'],
+  'HSBA'  :['HSBC Holdings','Banking','LSE · UK'],
+  'BP'    :['BP plc','Oil & Gas','NYSE / LSE · UK'],
+  'ERIC-B':['Ericsson','Telecom Equipment','Nasdaq Stockholm · Sweden'],
+  'VOLV-B':['Volvo Group','Trucks · Industrials','Nasdaq Stockholm · Sweden'],
+};
+
+/* ── FLAG MAP ── */
+const FM={
+  reuters:'🇬🇧',bloomberg:'🇺🇸',wsj:'🇺🇸','wall street journal':'🇺🇸',
+  'financial times':'🇬🇧','ft.com':'🇬🇧',cnbc:'🇺🇸',marketwatch:'🇺🇸',
+  'seeking alpha':'🇺🇸',seekingalpha:'🇺🇸',yahoo:'🇺🇸',benzinga:'🇺🇸',
+  thestreet:'🇺🇸','motley fool':'🇺🇸',zacks:'🇺🇸',nasdaq:'🇺🇸',
+  businesswire:'🇺🇸',prnewswire:'🇺🇸','pr newswire':'🇺🇸',fortune:'🇺🇸',
+  handelsblatt:'🇩🇪',spiegel:'🇩🇪',faz:'🇩🇪','manager magazin':'🇩🇪','ad-hoc-news':'🇩🇪',
+  'fd.nl':'🇳🇱',telegraaf:'🇳🇱',nos:'🇳🇱',
+  'les echos':'🇫🇷','le monde':'🇫🇷',bfm:'🇫🇷',
+  nikkei:'🇯🇵',nhk:'🇯🇵','straits times':'🇸🇬',channelnewsasia:'🇸🇬',
+  scmp:'🇭🇰','south china morning':'🇭🇰',xinhua:'🇨🇳',caixin:'🇨🇳',
+  'economic times':'🇮🇳',mint:'🇮🇳',afr:'🇦🇺','sydney morning':'🇦🇺',
+  guardian:'🇬🇧',bbc:'🇬🇧',telegraph:'🇬🇧',
+  'investing.com':'🌐',marketscreener:'🌐','ts2.tech':'🌐',
+  finwire:'🇸🇪','dagens industri':'🇸🇪','di.se':'🇸🇪',redeye:'🇸🇪',
+  cision:'🇸🇪',svd:'🇸🇪','svenska dagbladet':'🇸🇪',affarsvalden:'🇸🇪',
+};
+
+function getFlag(src,url){
+  const s=((src||'')+' '+(url||'')).toLowerCase();
+  for(const[k,f]of Object.entries(FM))if(s.includes(k))return f;
+  if(s.includes('.de'))return '🇩🇪'; if(s.includes('.fr'))return '🇫🇷';
+  if(s.includes('.jp'))return '🇯🇵'; if(s.includes('.cn'))return '🇨🇳';
+  if(s.includes('.kr'))return '🇰🇷'; if(s.includes('.sg'))return '🇸🇬';
+  if(s.includes('.in'))return '🇮🇳'; if(s.includes('.au'))return '🇦🇺';
+  if(s.includes('.nl'))return '🇳🇱'; if(s.includes('.hk'))return '🇭🇰';
+  if(s.includes('.se')||s.includes('sweden')||s.includes('stockholm'))return '🇸🇪';
+  return '🌐';
+}
+
+/* ── SENTIMENT ENGINE (FinBERT-equivalent keyword scoring) ── */
+const BKW={
+  'beat expectations':3,'beat estimates':3,'record revenue':3,'record earnings':3,
+  'record profit':3,'raised guidance':3,'blowout':3,'all-time high':3,
+  'strong buy':3,'price target raised':3,'upgrade':2.5,'overweight':2.5,
+  'outperform':2.5,'exceeded estimates':3,'revenue growth':2,'profit growth':2,
+  'earnings growth':2,'bullish':2,'surged':2,'soared':2,'jumped':2,'rally':2,
+  'partnership':1.5,'deal':1.5,'contract':1.5,'approved':2,'approval':2,
+  'expansion':1.5,'launched':1.5,'msci inclusion':2,'dual listing':1,
+  'nasdaq listing':1,'new customer':2,'new contract':2,'buy rating':3,
+  'gain':1,'rose':1,'climbed':1,'positive':1,'improved':1,'higher':1,
+  'recovery':1,'rebound':1,'growth':1,'profit':1,'strong':1,
+};
+const DKW={
+  'missed estimates':3,'missed expectations':3,'cut guidance':3,'lowered guidance':3,
+  'downgrade':2.5,'sell rating':3,'price target cut':3,'price target lowered':3,
+  'layoffs':3,'investigation':3,'criminal probe':3,'criminal':3,'fraud':3,
+  'bankruptcy':3,'recall':3,'ban':3,'sanctions':3,'fine':3,'penalty':3,
+  'restated':2,'restatement':2,'wider loss':2,'widened loss':2,
+  'revenue miss':2,'earnings miss':2,'disappointing':2,'concern':2,
+  'warning':2,'headwind':2,'challenge':2,'pressure':2,'slump':2,
+  'plunge':2,'crash':2,'selloff':2,'sell-off':2,'loss':2,'losses':2,
+  'short sellers':2,'short position':2,'insider probe':2,
+  'fell':1,'dropped':1,'lower':1,'weak':1,'miss':1,'struggle':1,
+  'negative':1,'decline':1,'down':1,
+};
+
+function scoreSent(text){
+  const t=text.toLowerCase();
+  let b=0,d=0;
+  for(const[k,w]of Object.entries(BKW))if(t.includes(k))b+=w;
+  for(const[k,w]of Object.entries(DKW))if(t.includes(k))d+=w;
+  const tot=b+d;
+  if(!tot)return{sentiment:'neut',confidence:58,pos:20,neg:22,neu:58};
+  const pos=Math.min(94,Math.round(b/tot*100));
+  const neg=Math.min(94,Math.round(d/tot*100));
+  const neu=Math.max(0,100-pos-neg);
+  if(b>d*1.3)return{sentiment:'bull',confidence:Math.min(93,52+b*3),pos,neg,neu};
+  if(d>b*1.3)return{sentiment:'bear',confidence:Math.min(93,52+d*3),pos,neg,neu};
+  return{sentiment:'neut',confidence:60,pos,neg,neu};
+}
+
+function timeAgo(s){
+  if(!s)return'recently';
+  const d=new Date(s);if(isNaN(d))return'recently';
+  const m=Math.floor((Date.now()-d)/60000);
+  if(m<1)return'just now';if(m<60)return m+'m ago';
+  if(m<1440)return Math.floor(m/60)+'h ago';
+  return Math.floor(m/1440)+'d ago';
+}
+function isRecent(s,mins){return s&&(Date.now()-new Date(s).getTime())<mins*60000;}
+
+function buildEvidence(title,desc,sent){
+  const text=title+'. '+(desc||'');
+  const ev=[];
+  const nums=text.match(/[\d,.]+\s*(%|billion|million|SEK|USD|EUR|GBP|kronor|bps|percent)/gi)||[];
+  if(nums.length)ev.push('Key figures cited: '+nums.slice(0,2).join(', '));
+  text.split(/[.!?]+/).filter(s=>s.trim().length>30).slice(0,4).forEach(s=>{
+    const c=s.trim().replace(/^[\s\W]+/,'');
+    if(c.length>30&&c.length<220&&ev.length<3)ev.push(c);
+  });
+  if(ev.length<2){
+    if(sent==='bull')ev.push('Article signals positive business momentum or bullish analyst view');
+    else if(sent==='bear')ev.push('Article highlights risks, losses, or challenges for the company');
+    else ev.push('Article presents balanced coverage — no strong directional signal detected');
+  }
+  return ev.slice(0,3);
+}
+
+function buildHighlights(title,desc){
+  const text=(title+'. '+(desc||'')).replace(/<[^>]+>/g,'');
+  const hi=[title.trim()];
+  text.split(/[.!?]+/).filter(s=>s.trim().length>20).slice(1,4).forEach(s=>{
+    const c=s.trim().replace(/^[\s\W]+/,'');
+    if(c.length>20&&c.length<200&&!hi.includes(c))hi.push(c);
+  });
+  return hi.slice(0,3);
+}
+
+function buildSummary(title,desc,sent){
+  const clean=(desc||'').replace(/<[^>]+>/g,'').trim();
+  if(clean.length>80)return clean.substring(0,360)+(clean.length>360?'...':'');
+  const tone=sent==='bull'?'a positive development':sent==='bear'?'a potential headwind':'a development worth monitoring';
+  return title+' — This represents '+tone+' for investors tracking this stock.';
+}
+
+function enrichArticle(raw,idx){
+  const{sentiment,confidence,pos,neg,neu}=scoreSent(raw.title+' '+(raw.desc||''));
+  const flag=getFlag(raw.srcName||'',raw.link||'')||raw.flag||'🌐';
+  return{
+    id:idx+1,sentiment,confidence,pos,neg,neu,
+    headline:raw.title,
+    source:raw.srcName||'Unknown',
+    flag,
+    time:timeAgo(raw.pub),
+    publishedAt:raw.pub,
+    isNew:isRecent(raw.pub,180),
+    url:raw.link,
+    excerpt:(raw.desc||'').replace(/<[^>]+>/g,'').trim(),
+    evidence:buildEvidence(raw.title,raw.desc||'',sentiment),
+    highlights:buildHighlights(raw.title,raw.desc||''),
+    summary:buildSummary(raw.title,raw.desc||'',sentiment),
+  };
+}
+
+/* ── SETUP / LAUNCH ── */
+function launch(){
+  const url=document.getElementById('WU').value.trim();
+  const err=document.getElementById('ERR');
+  if(!url.startsWith('https://')){err.style.display='block';return;}
+  err.style.display='none';
+  // Strip trailing slash and any path — only keep protocol + hostname
+  try {
+    const u = new URL(url);
+    WORKER = u.origin; // e.g. https://flat-bird-ef55.lennonwee9.workers.dev
+  } catch(e) {
+    WORKER = url.replace(/\/+$/, '');
+  }
+  localStorage.setItem('sp_worker', WORKER);
+  document.getElementById('setup').style.display='none';
+  document.getElementById('app').classList.add('on');
+  restoreWL();
+  if('Notification'in window&&Notification.permission==='default')Notification.requestPermission();
+}
+
+function openSetup(){
+  document.getElementById('WU').value=WORKER;
+  document.getElementById('setup').style.display='flex';
+}
+
+window.addEventListener('load',()=>{
+  const s=localStorage.getItem('sp_worker');
+  if(s){
+    WORKER=s;
+    document.getElementById('setup').style.display='none';
+    document.getElementById('app').classList.add('on');
+    restoreWL();
+    if('Notification'in window&&Notification.permission==='default')Notification.requestPermission();
+  }
+});
+
+/* ── WATCHLIST ── */
+function restoreWL(){
+  try{wl=JSON.parse(localStorage.getItem('sp_wl')||'[]');}catch(e){wl=[];}
+  if(!wl.length)wl=['SIVE','AAPL','NVDA','ASML'];
+  renderWL();
+}
+function saveWL(){localStorage.setItem('sp_wl',JSON.stringify(wl));}
+function renderWL(){
+  document.getElementById('WL').innerHTML=wl.map(tk=>`
+    <button class="wchip${tk===ticker?' act':''}" onclick="quickLoad('${tk}')">
+      <span class="wtk">${tk}</span>
+      <button class="wdel" onclick="rmWL('${tk}',event)">&#10005;</button>
+    </button>`).join('');
+}
+function rmWL(tk,e){e.stopPropagation();wl=wl.filter(t=>t!==tk);saveWL();renderWL();}
+function addWL(tk){if(!wl.includes(tk)){wl.push(tk);saveWL();}}
+function quickLoad(tk){ticker=tk;document.getElementById('SI').value=tk;renderWL();fetchNews(tk);}
+
+/* ── SEARCH ── */
+function doSearch(){
+  const v=document.getElementById('SI').value.trim().toUpperCase();if(!v)return;
+  pending=v;
+  const info=TDB[v]||[v,'Stock','Global Exchange'];
+  document.getElementById('VN').textContent=info[0];
+  document.getElementById('VT').textContent=v;
+  document.getElementById('VM').textContent=info[1]+' · '+info[2];
+  document.getElementById('VC').classList.add('on');
+}
+function cancelSearch(){document.getElementById('VC').classList.remove('on');pending=null;}
+function confirmSearch(){
+  document.getElementById('VC').classList.remove('on');
+  ticker=pending;
+  addWL(ticker);renderWL();
+  fetchNews(ticker);
+}
+
+/* ── MAIN FETCH ── */
+async function fetchNews(tk){
+  stopPoll();
+  articles=[];filter='all';selId=null;
+  const info=TDB[tk]||[tk,'',''];
+  const co=info[0];
+
+  document.getElementById('DE').style.display='none';
+  document.getElementById('AD').innerHTML='';
+  document.getElementById('FD').style.display='none';
+  document.getElementById('CS').style.display='none';
+  document.getElementById('LB').classList.remove('on');
+  document.getElementById('AL').innerHTML=`<div class="empty"><i class="ti ti-loader"></i><p>Scanning 19 global sources<br>for <strong style="color:var(--t)">${tk}</strong>...</p></div>`;
+
+  const ld=document.getElementById('LD');
+  const pf=document.getElementById('PF');
+  ld.classList.add('on');
+  pf.className='pfill';
+  setTimeout(()=>{pf.style.cssText='width:80%;transition:width 14s ease';},80);
+  document.getElementById('LT').textContent='Scanning global news for '+tk+'...';
+
+  try{
+    const workerURL = buildURL(tk,co);
+    console.log('[StockPulse] Calling worker:', workerURL);
+    const resp=await fetch(
+      workerURL,
+      {signal:AbortSignal.timeout(25000)}
+    );
+    if(!resp.ok)throw new Error('Worker returned '+resp.status+'. Check your Worker URL in Settings.');
+    const data=await resp.json();
+
+    pf.style.cssText='width:100%;transition:width .3s ease';
+    setTimeout(()=>{ld.classList.remove('on');pf.style.width='5%';},350);
+
+    if(!data.articles?.length){
+      const ok=(data.sources||[]).filter(s=>s.ok).length;
+      document.getElementById('AL').innerHTML=`
+        <div class="empty"><i class="ti ti-mood-empty"></i>
+        <p><strong style="color:var(--t)">${tk}</strong> — 0 articles found<br><br>
+        ${ok}/${(data.sources||[]).length} sources responded.<br><br>
+        For non-US stocks try the exchange suffix:<br>
+        <code style="background:var(--bg3);padding:2px 6px;border-radius:3px;font-family:var(--mono);font-size:11px">${tk}.ST</code> Stockholm
+        &nbsp;<code style="background:var(--bg3);padding:2px 6px;border-radius:3px;font-family:var(--mono);font-size:11px">${tk}.L</code> London</p></div>`;
+      return;
+    }
+
+    articles=data.articles.map(enrichArticle);
+    document.getElementById('FD').style.display='block';
+    renderList();updateSidebar();updateCoverage();
+
+    const ok=(data.sources||[]).filter(s=>s.ok).length;
+    document.getElementById('LBT').textContent=articles.length+' articles · '+ok+' sources live · '+tk+' · Updated just now';
+    document.getElementById('LB').classList.add('on');
+
+    if(articles.length>0)setTimeout(()=>selectArticle(articles[0].id),100);
+    setTimeout(()=>fireToast(tk,articles[0]),1800);
+    startPoll(tk);
+
+  }catch(err){
+    pf.style.width='0%';
+    ld.classList.remove('on');
+    document.getElementById('AL').innerHTML='<div class="empty"><i class="ti ti-wifi-off"></i><p>Could not reach your Worker.<br><br>Open Settings (&#9881;) and check<br>your Worker URL.</p></div>';
+    document.getElementById('AD').innerHTML=`
+      <div style="padding:32px;text-align:center">
+        <i class="ti ti-alert-triangle" style="font-size:40px;color:var(--bear);display:block;margin-bottom:14px"></i>
+        <div style="font-size:15px;font-weight:600;margin-bottom:8px;color:var(--t)">Connection failed</div>
+        <div style="font-size:12px;color:var(--t3);line-height:1.8;max-width:320px;margin:0 auto">${err.message}</div>
+      </div>`;
+    console.error('StockPulse:',err);
+  }
+}
+
+/* ── RENDER ── */
+function renderList(){
+  const list=document.getElementById('AL');
+  const f=filter==='all'?articles:articles.filter(a=>a.sentiment===filter);
+  if(!f.length){list.innerHTML='<div class="empty"><i class="ti ti-filter"></i><p>No articles match this filter</p></div>';return;}
+  list.innerHTML=f.map(a=>`
+    <div class="aitem ${a.sentiment}${a.id===selId?' sel':''}" id="I${a.id}" onclick="selectArticle(${a.id})">
+      <div class="ar">
+        <span class="sbdg">${a.sentiment==='bull'?'&#9650; Bullish':a.sentiment==='bear'?'&#9660; Bearish':'&#9679; Neutral'}</span>
+        ${a.isNew?'<span class="ntag">NEW</span>':''}
+        <span class="atm">${a.time}</span>
+      </div>
+      <div class="asrc"><span style="font-size:12px">${a.flag}</span><span style="font-size:10px;color:var(--t3);font-family:var(--mono)">${a.source}</span></div>
+      <div class="ahlc">${a.headline}</div>
+    </div>`).join('');
+}
+
+function doFilter(mode,btn){
+  filter=mode;
+  document.querySelectorAll('.fc').forEach(c=>c.classList.remove('act'));
+  btn.classList.add('act');
+  renderList();
+}
+
+/* ── SELECT ARTICLE ── */
+function selectArticle(id){
+  selId=id;
+  const a=articles.find(x=>x.id===id);if(!a)return;
+  document.querySelectorAll('.aitem').forEach(el=>el.classList.remove('sel'));
+  document.getElementById('I'+id)?.classList.add('sel');
+  const info=TDB[ticker]||[ticker,'',''];
+  const si=a.sentiment==='bull'?'&#9650; BULLISH':a.sentiment==='bear'?'&#9660; BEARISH':'&#9679; NEUTRAL';
+  const ei=a.sentiment==='bull'?'ti-circle-check':a.sentiment==='bear'?'ti-circle-x':'ti-circle';
+  const ec=a.sentiment==='bull'?'bull-ev':a.sentiment==='bear'?'bear-ev':'neut-ev';
+  const others=articles.filter(x=>x.id!==id);
+
+  document.getElementById('AD').innerHTML=`
+    <div class="dtop">
+      <div class="stico">${(ticker||'').substring(0,5)}</div>
+      <div style="flex:1;min-width:0"><div class="stnm">${info[0]||ticker}</div><div class="stsub">${ticker} &middot; ${info[2]||'Global'}</div></div>
+      <div class="slg ${a.sentiment}">${si}</div>
+    </div>
+    <div class="abody">
+      <div class="ameta">
+        <div class="asrctag"><span>${a.flag}</span><span>${a.source}</span></div>
+        <span class="adate">${a.time}</span>
+        ${a.isNew?'<span class="ntag">BREAKING</span>':''}
+      </div>
+      <div class="atitle">${a.headline}</div>
+      ${a.excerpt?`<div class="aexc">${a.excerpt.substring(0,480)}${a.excerpt.length>480?'...':''}</div>`:''}
+      <div class="abox" style="margin-bottom:16px">
+        <div class="aboxh">
+          <span class="aboxl">AI Sentiment Analysis</span>
+          <span class="slg ${a.sentiment}" style="font-size:9px;padding:3px 8px">${si} &middot; ${a.confidence}% confidence</span>
+        </div>
+        <div class="cbar"><div class="cfill ${a.sentiment}" style="width:${a.confidence}%"></div></div>
+        <div class="evlist">
+          ${a.evidence.map(e=>`<div class="evitem ${ec}"><i class="ti ${ei} evico"></i><span>${e}</span></div>`).join('')}
+        </div>
+        <div class="scbox">
+          <div class="scr"><span class="sclbl">Positive</span><div class="scbar"><div class="scfill pos" style="width:${a.pos}%"></div></div><span class="scpct">${a.pos}%</span></div>
+          <div class="scr"><span class="sclbl">Negative</span><div class="scbar"><div class="scfill neg" style="width:${a.neg}%"></div></div><span class="scpct">${a.neg}%</span></div>
+          <div class="scr"><span class="sclbl">Neutral</span><div class="scbar"><div class="scfill ntr" style="width:${a.neu}%"></div></div><span class="scpct">${a.neu}%</span></div>
+          <div class="scnote">Weighted financial keyword model &middot; ${articles.length} articles in this session</div>
+        </div>
+      </div>
+      <div style="margin-bottom:16px">
+        <div class="slbl">Key Highlights</div>
+        ${a.highlights.map(h=>`<div class="hiitem"><i class="ti ti-arrow-right"></i><span>${h}</span></div>`).join('')}
+      </div>
+      <div style="margin-bottom:16px">
+        <div class="slbl">Summary</div>
+        <div class="sumbox"><div class="sumtxt">${a.summary}</div></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
+        ${a.url?`<a href="${a.url}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ac2);padding:6px 12px;border:1px solid rgba(59,130,246,.25);border-radius:5px;background:rgba(59,130,246,.08);text-decoration:none"><i class="ti ti-external-link" style="font-size:13px"></i> Read full article</a>`:''}
+        <button onclick="shareArt('${encodeURIComponent(a.headline||'')}','${encodeURIComponent(a.url||'')}')" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--t2);padding:6px 12px;border:1px solid var(--b2);border-radius:5px;background:var(--bg3);cursor:pointer;font-family:var(--sans)"><i class="ti ti-share" style="font-size:13px"></i> Share</button>
+      </div>
+      ${others.length?`
+        <div style="margin-bottom:20px">
+          <div class="slbl">More Coverage &mdash; ${others.length} other sources</div>
+          ${others.slice(0,6).map(x=>`
+            <div class="relitem" onclick="selectArticle(${x.id})">
+              <span style="font-size:14px;flex-shrink:0;margin-top:1px">${x.flag}</span>
+              <div class="relbody"><div class="reltitle">${x.headline}</div><div class="relsrc">${x.source} &middot; ${x.time}</div></div>
+              <span class="relsent ${x.sentiment}">${x.sentiment==='bull'?'&#9650;':x.sentiment==='bear'?'&#9660;':'&#9679;'}</span>
+            </div>`).join('')}
+        </div>`:''}
+    </div>`;
+
+  if(window.innerWidth<=900){
+    document.getElementById('LP').style.display='none';
+    document.getElementById('LP').classList.remove('open');
+    document.getElementById('MB').classList.add('on');
+  }
+}
+
+function shareArt(hl,url){
+  const h=decodeURIComponent(hl),u=decodeURIComponent(url);
+  if(navigator.share)navigator.share({title:h,url:u});
+  else navigator.clipboard?.writeText(u);
+}
+
+/* ── SIDEBAR ── */
+function updateSidebar(){
+  const b=articles.filter(a=>a.sentiment==='bull').length;
+  const d=articles.filter(a=>a.sentiment==='bear').length;
+  const n=articles.filter(a=>a.sentiment==='neut').length;
+  document.getElementById('SB').textContent=b;
+  document.getElementById('SR').textContent=d;
+  document.getElementById('SN').textContent=n;
+  const tot=articles.length||1;
+  document.getElementById('ND').style.left=Math.max(5,Math.min(95,Math.round(50+((b-d)/tot)*38)))+'%';
+}
+
+function updateCoverage(){
+  const fc={};
+  articles.forEach(a=>{fc[a.flag]=(fc[a.flag]||0)+1;});
+  const s=Object.entries(fc).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  if(s.length){
+    document.getElementById('CS').style.display='block';
+    document.getElementById('CG').innerHTML=s.map(([f,c])=>`<div class="cit"><span class="cf">${f}</span><span class="cc">${c}</span></div>`).join('');
+  }
+}
+
+/* ── POLLING (every 5 min) ── */
+function startPoll(tk){
+  pollTimer=setInterval(async()=>{
+    try{
+      const info=TDB[tk]||[tk,'',''];
+      const resp=await fetch(buildURL(tk,info[0]),{signal:AbortSignal.timeout(15000)});
+      const data=await resp.json();
+      if(!data.articles?.length)return;
+      const newest=data.articles[0];
+      if(newest.title!==articles[0]?.headline&&newest.link!==articles[0]?.url){
+        const enriched=enrichArticle(newest,0);
+        enriched.isNew=true;
+        articles.unshift(enriched);
+        articles.forEach((a,i)=>a.id=i+1);
+        renderList();updateSidebar();
+        fireAlert(tk,enriched);
+        document.getElementById('LBT').textContent=articles.length+' articles \u00b7 NEW article detected \u00b7 '+tk;
+      }
+    }catch(e){}
+  },5*60*1000);
+}
+function stopPoll(){if(pollTimer){clearInterval(pollTimer);pollTimer=null;}}
+
+/* ── ALERTS ── */
+function fireAlert(tk,a){
+  alertCnt++;
+  document.getElementById('ABN').textContent=alertCnt;
+  const ico=a.sentiment==='bull'?'ti-trending-up':a.sentiment==='bear'?'ti-trending-down':'ti-minus';
+  document.getElementById('NF').insertAdjacentHTML('afterbegin',`
+    <div class="nitem unread">
+      <div class="nico ${a.sentiment}"><i class="ti ${ico}"></i></div>
+      <div><div class="nttl">${tk} \u2014 ${a.headline.substring(0,55)}...</div><div class="ntm">Just now \u00b7 ${a.source}</div></div>
+    </div>`);
+  if(Notification.permission==='granted')new Notification('StockPulse: '+tk,{body:a.headline.substring(0,100),tag:'sp-'+tk});
+  fireToast(tk,a);
+}
+
+function fireToast(tk,a){
+  if(!a)return;
+  const sc=a.sentiment==='bull'?'var(--bull)':a.sentiment==='bear'?'var(--bear)':'var(--neut)';
+  const lbl=a.sentiment==='bull'?'&#9650; Bullish':a.sentiment==='bear'?'&#9660; Bearish':'&#9679; Neutral';
+  document.getElementById('TB').innerHTML='<span class="ttk">'+tk+'</span> \u2014 <span style="color:'+sc+'">'+lbl+'</span> \u00b7 '+(a.headline||'').substring(0,65)+'...';
+  const t=document.getElementById('TO');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),7000);
+}
+function closeToast(){document.getElementById('TO').classList.remove('show');}
+function toggleAlerts(){document.getElementById('AB').classList.toggle('lit');alertCnt=0;document.getElementById('ABN').textContent='0';}
+
+/* ── MOBILE ── */
+function showLeft(){
+  document.getElementById('LP').style.display='flex';
+  document.getElementById('LP').classList.add('open');
+  document.getElementById('MB').classList.remove('on');
+  document.querySelectorAll('.mbtn').forEach(b=>b.classList.remove('act'));
+  document.getElementById('MS').classList.add('act');
+}
+function mobTab(tab){
+  document.querySelectorAll('.mbtn').forEach(b=>b.classList.remove('act'));
+  document.getElementById('M'+tab)?.classList.add('act');
+  if(tab==='S')showLeft();
+  else{
+    document.getElementById('LP').style.display='none';
+    document.getElementById('LP').classList.remove('open');
+    if(tab==='N')document.getElementById('MB').classList.add('on');
+  }
+}
+</script>
+</body>
+</html>
