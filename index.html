@@ -461,6 +461,7 @@ let currentWl  = null;
 let autoTimer  = null, autoSecs = 0, autoOn = false;
 let thesisCache = {};
 let openAccordions = new Set(); // tracks which tickers are expanded
+let thesisArticleStore = {}; // keyed by ticker, stores articles for thesis
 
 // new watchlist builder state
 let newTickers = [];
