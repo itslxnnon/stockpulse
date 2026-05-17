@@ -236,7 +236,7 @@ body{background:var(--bg);color:var(--t1);font-family:var(--fi);font-size:14px;l
 .sent-badge.bearish{background:rgba(239,68,68,.1);color:var(--bear);}
 .sent-badge.neutral{background:rgba(75,96,112,.12);color:var(--t2);}
 .card-src{font-size:11px;color:var(--t3);}
-.card-time{font-size:11px;color:var(--t3);}
+.card-time{font-size:11px;color:var(--t3);white-space:nowrap;}
 
 /* Headline display:
    .card-title       = the translated (English) headline, shown prominently
@@ -250,8 +250,8 @@ body{background:var(--bg);color:var(--t1);font-family:var(--fi);font-size:14px;l
 .card-orig-title a:hover{color:var(--t2);}
 .lang-tag{display:inline-block;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:1px 5px;border-radius:4px;background:rgba(245,158,11,.1);color:var(--gold);margin-right:5px;vertical-align:middle;}
 
-.analysis-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:3px;}
-.card-summary{font-size:13px;color:var(--t2);line-height:1.7;padding-top:8px;border-top:1px solid var(--line);}
+.analysis-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:5px;margin-top:10px;}
+.card-summary{font-size:13px;color:var(--t2);line-height:1.8;padding-top:10px;border-top:1px solid var(--line);margin-top:6px;}
 
 /* Skeleton */
 .skel{background:linear-gradient(90deg,var(--bg2) 25%,var(--bg3) 50%,var(--bg2) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:8px;}
@@ -886,9 +886,9 @@ function renderResults(){
       ? shownArts.map(a=>{
           const dispTitle = a.translatedTitle||a.title||'';
           const origTitle = a.translatedTitle ? (a.title||'') : '';
-          const langCode  = a.language&&a.language!=='en' ? a.language.toUpperCase() : '';
-          const titleHtml = `<div class="card-title"><a href="${a.link||'#'}" target="_blank" rel="noopener">${dispTitle}</a></div>`
-            +(origTitle ? `<div class="card-orig-title">${langCode?`<span class="lang-tag">${langCode}</span>`:''}<a href="${a.link||'#'}" target="_blank" rel="noopener">${origTitle}</a></div>` : '');
+          const langCode  = a.lang&&a.lang!=='en' ? a.lang.toUpperCase() : '';
+          const titleHtml = `<div class="card-title"><a href="${a.url||'#'}" target="_blank" rel="noopener">${dispTitle}</a></div>`
+            +(origTitle ? `<div class="card-orig-title">${langCode?'<span class="lang-tag">'+langCode+'</span>':''}<a href="${a.url||'#'}" target="_blank" rel="noopener">${origTitle}</a></div>` : '');
           const summaryHtml = a.summary
             ? `<div class="analysis-label">Summary</div><div class="card-summary">${a.summary}</div>`
             : '';
@@ -896,7 +896,7 @@ function renderResults(){
             <div class="card-meta">
               <span class="sent-badge ${a.sentiment||'neutral'}">${a.sentiment||'neutral'}</span>
               <span class="card-src">${a.source||''}</span>
-              <span class="card-time">${timeAgo(a.pubDate)}</span>
+              <span class="card-time">${formatDate(a.pubDate)}</span>
             </div>
             ${titleHtml}
             ${summaryHtml}
@@ -1031,18 +1031,28 @@ function showToast(msg){
 }
 
 // ════════════════════════════════════════════════════════════════
-// TIME AGO
+// DATE FORMATTING
 // ════════════════════════════════════════════════════════════════
-function timeAgo(dateStr){
+function formatDate(dateStr){
   if(!dateStr) return '';
   const d=new Date(dateStr);
   if(isNaN(d)) return '';
-  const diff=Math.floor((Date.now()-d)/1000);
-  if(diff<60) return diff+'s ago';
-  if(diff<3600) return Math.floor(diff/60)+'m ago';
-  if(diff<86400) return Math.floor(diff/3600)+'h ago';
-  return Math.floor(diff/86400)+'d ago';
+  const now = Date.now();
+  const diff = Math.floor((now - d)/1000);
+  const timeStr = d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true});
+  const dateLabel = diff < 86400
+    ? 'Today'
+    : diff < 172800
+    ? 'Yesterday'
+    : d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const agoStr = diff<60 ? diff+'s ago'
+    : diff<3600 ? Math.floor(diff/60)+'m ago'
+    : diff<86400 ? Math.floor(diff/3600)+'h ago'
+    : Math.floor(diff/86400)+'d ago';
+  return dateLabel+' '+timeStr+' ('+agoStr+')';
 }
+// keep timeAgo as alias for accordion header use
+function timeAgo(dateStr){ return formatDate(dateStr); }
 
 </script>
 </body>
