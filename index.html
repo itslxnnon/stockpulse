@@ -305,7 +305,7 @@ code{background:var(--bg3);border:1px solid var(--line);border-radius:4px;paddin
 .risk-item{font-size:13px;color:var(--t1);line-height:1.75;margin-bottom:5px;padding-left:4px;}
 /* Card summary */
 .card-summary-text{font-size:13px;color:var(--t2);line-height:1.7;margin-top:6px;}
-</style>
+
 @media(max-width:768px){
   .sidebar{position:fixed;top:0;left:0;bottom:0;z-index:150;transform:translateX(-100%);box-shadow:4px 0 24px rgba(0,0,0,.4);}
   .sidebar.open{transform:translateX(0);}
@@ -812,6 +812,9 @@ function toggleAccordion(ticker){
 // ════════════════════════════════════════════════════════════════
 // THESIS
 // ════════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
+// THESIS
+// ════════════════════════════════════════════════════════════════
 async function generateThesis(ticker, articles){
   if(thesisCache[ticker]) return thesisCache[ticker];
   try{
@@ -822,17 +825,224 @@ async function generateThesis(ticker, articles){
   const bear=articles.filter(a=>a.sentiment==='bearish');
   const tot=articles.length;
   const dom=bull.length>bear.length?'bullish':bear.length>bull.length?'bearish':'mixed';
-  const tot=articles.length;
-  const dom=bull.length>bear.length?'bullish':bear.length>bull.length?'bearish':'mixed';
   const chainOut = dom==='bullish'
-    ? 'Positive momentum for '+ticker+' could trigger institutional buying, improved liquidity, and margin expansion - a virtuous cycle that attracts M&A interest.'
+    ? 'Positive momentum for '+ticker+' could trigger institutional buying, improved liquidity, and margin expansion — a virtuous cycle that attracts M&A interest.'
     : 'Negative news for '+ticker+' risks a self-reinforcing cycle of analyst downgrades, institutional de-risking, and rising cost of capital.';
   const risks = dom==='bullish'
-    ? 'Execution risk - whether revenue growth translates to margin improvement; sector rotation risk; valuation stretch.'
-    : 'Overshooting risk - signs of stabilisation; management restructuring; sector-wide recovery catalysts.';
+    ? 'Execution risk — whether revenue growth translates to margin improvement; sector rotation risk; valuation stretch.'
+    : 'Overshooting risk — signs of stabilisation; management restructuring; sector-wide recovery catalysts.';
   const thesis = 'Current Picture\n\n'+ticker+' is generating '+dom+' news flow with '+bull.length+' bullish and '+bear.length+' bearish signals across '+tot+' recent articles.\n\nChain-Effect Outlook\n\n'+chainOut+'\n\nKey Risks to Monitor\n\n'+risks;
   thesisCache[ticker]=thesis;
   return thesis;
 }
-    ? 'Execution risk — whether revenue growth translates to margin improvement; sector rotation risk; valuation stretch.'
-    : 'Overshooting risk — signs of stabilisation; management restructuring; sector-wide recovery catalysts.';
+
+// ════════════════════════════════════════════════════════════════
+// RENDER RESULTS
+// ════════════════════════════════════════════════════════════════
+function renderResults(){
+  const results=document.getElementById('newsResults');
+  if(!allGroups.length){results.innerHTML='<div style="text-align:center;padding:40px;color:var(--t3);font-size:13px;">No results yet. Search a watchlist to get started.</div>';return;}
+
+  let groups=[...allGroups];
+  // Apply sentiment filter across all groups
+  if(activeF!=='all'){
+    groups=groups.map(g=>({...g,articles:(g.articles||[]).filter(a=>a.sentiment===activeF)}));
+  }
+  // Sort
+  if(activeSort==='sentiment'){
+    groups=groups.map(g=>({...g,articles:[...(g.articles||[])].sort((a,b)=>{
+      const order={bullish:0,bearish:1,neutral:2};
+      return (order[a.sentiment]??2)-(order[b.sentiment]??2);
+    })}));
+  }
+
+  const maxShow = settings.articleCount||10;
+
+  results.innerHTML='<div class="acc-list">'+groups.map(g=>{
+    const ticker=g.ticker;
+    const arts=g.articles||[];
+    const isOpen=openAccordions.has(ticker);
+    const bull=arts.filter(a=>a.sentiment==='bullish').length;
+    const bear=arts.filter(a=>a.sentiment==='bearish').length;
+    const neut=arts.filter(a=>a.sentiment==='neutral').length;
+    const tot=arts.length||1;
+    const bullP=Math.round(bull/tot*100);
+    const bearP=Math.round(bear/tot*100);
+    const neutP=100-bullP-bearP;
+    const dom=bull>bear?'bull-dominant':bear>bull?'bear-dominant':'neutral-dominant';
+    const lastT=arts[0]?timeAgo(arts[0].pubDate):'';
+
+    // Store articles for thesis use
+    thesisArticleStore[ticker]=arts;
+
+    const pillsHtml=(bull>0?`<span class="ap ap-bull">▲ ${bull} bullish</span>`:'')
+      +(bear>0?`<span class="ap ap-bear">▼ ${bear} bearish</span>`:'')
+      +(neut>0?`<span class="ap ap-neut">● ${neut} neutral</span>`:'')
+      +(lastT?`<span class="ap ap-time">${lastT}</span>`:'');
+
+    const shownArts=arts.slice(0,maxShow);
+    const cardsHtml=shownArts.length
+      ? shownArts.map(a=>{
+          const dispTitle = a.translatedTitle||a.title||'';
+          const origTitle = a.translatedTitle ? (a.title||'') : '';
+          const langCode  = a.language&&a.language!=='en' ? a.language.toUpperCase() : '';
+          const titleHtml = `<div class="card-title"><a href="${a.link||'#'}" target="_blank" rel="noopener">${dispTitle}</a></div>`
+            +(origTitle ? `<div class="card-orig-title">${langCode?`<span class="lang-tag">${langCode}</span>`:''}<a href="${a.link||'#'}" target="_blank" rel="noopener">${origTitle}</a></div>` : '');
+          const summaryHtml = a.summary
+            ? `<div class="analysis-label">Summary</div><div class="card-summary">${a.summary}</div>`
+            : '';
+          return `<div class="card ${a.sentiment||'neutral'}">
+            <div class="card-meta">
+              <span class="sent-badge ${a.sentiment||'neutral'}">${a.sentiment||'neutral'}</span>
+              <span class="card-src">${a.source||''}</span>
+              <span class="card-time">${timeAgo(a.pubDate)}</span>
+            </div>
+            ${titleHtml}
+            ${summaryHtml}
+          </div>`;
+        }).join('')
+      : '<div style="padding:16px;font-size:13px;color:var(--t3);">No articles match the current filter.</div>';
+
+    const thesisId='thesis-'+ticker;
+    const thesisBodyId='thesisbody-'+ticker;
+
+    return `<div class="acc-item ${dom} ${isOpen?'open':''}" id="acc-${ticker}">
+      <div class="acc-hdr" onclick="toggleAccordion('${ticker}')">
+        <span class="acc-ticker">${ticker}</span>
+        <span class="acc-count">${arts.length} article${arts.length!==1?'s':''}</span>
+        <div class="acc-pills">${pillsHtml}</div>
+        <div class="acc-bar-wrap">
+          <div class="acc-bar-bull" style="width:${bullP}%"></div>
+          <div class="acc-bar-bear" style="width:${bearP}%"></div>
+          <div class="acc-bar-neut" style="width:${neutP}%"></div>
+        </div>
+        <div class="acc-actions">
+          <button class="tref-btn" data-rt="${ticker}" onclick="refreshTicker('${ticker}',event)">↻ Refresh</button>
+        </div>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="sent-bar">
+            <div class="sb-bull" style="width:${bullP}%"></div>
+            <div class="sb-bear" style="width:${bearP}%"></div>
+            <div class="sb-neut" style="width:${neutP}%"></div>
+          </div>
+          <div class="thesis-block">
+            <div class="thesis-hdr" id="${thesisId}" onclick="toggleThesis('${ticker}')">
+              <div class="thesis-icon">🔬</div>
+              <div><div class="thesis-label">Deep-Dive Thesis</div><div class="thesis-sub">AI-generated analysis · click to expand</div></div>
+              <span class="thesis-chev">▼</span>
+            </div>
+            <div class="thesis-body" id="${thesisBodyId}">
+              <div class="thesis-loading"><span class="spin"></span> Generating thesis…</div>
+            </div>
+          </div>
+          ${cardsHtml}
+        </div>
+      </div>
+    </div>`;
+  }).join('')+'</div>';
+}
+
+// ════════════════════════════════════════════════════════════════
+// THESIS TOGGLE
+// ════════════════════════════════════════════════════════════════
+async function toggleThesis(ticker){
+  const hdr=document.getElementById('thesis-'+ticker);
+  const body=document.getElementById('thesisbody-'+ticker);
+  if(!hdr||!body) return;
+  const opening=!body.classList.contains('open');
+  hdr.classList.toggle('open',opening);
+  body.classList.toggle('open',opening);
+  if(opening && !thesisCache[ticker]){
+    const arts=thesisArticleStore[ticker]||[];
+    const thesis=await generateThesis(ticker,arts);
+    renderThesisBody(ticker,thesis);
+  } else if(opening && thesisCache[ticker]){
+    renderThesisBody(ticker,thesisCache[ticker]);
+  }
+}
+
+function renderThesisBody(ticker, thesis){
+  const body=document.getElementById('thesisbody-'+ticker);
+  if(!body) return;
+  // Parse sections
+  const sections=[
+    {icon:'📊',label:'Current Picture'},
+    {icon:'🔗',label:'Chain-Effect Outlook'},
+    {icon:'🔍',label:'Bottleneck Analysis & Adjacent Investment Opportunities'},
+    {icon:'⚠️',label:'Key Risks to Monitor'}
+  ];
+  let html='';
+  sections.forEach(s=>{
+    const re=new RegExp(s.label+'\\s*\\n+([\\s\\S]*?)(?=(?:Current Picture|Chain-Effect Outlook|Bottleneck Analysis|Key Risks to Monitor|$))','i');
+    const m=thesis.match(re);
+    const content=m?m[1].trim():'';
+    if(content){
+      html+=`<div style="margin-bottom:16px;">
+        <div style="font-size:12px;font-weight:600;color:var(--accent);margin-bottom:6px;">${s.icon} ${s.label}</div>
+        <p>${content.replace(/\n\n/g,'</p><p>').replace(/\n/g,' ')}</p>
+      </div>`;
+    }
+  });
+  // Fallback: just show raw text
+  if(!html){
+    html='<p>'+thesis.replace(/\n\n/g,'</p><p>').replace(/\n/g,' ')+'</p>';
+  }
+  body.innerHTML=html;
+}
+
+// ════════════════════════════════════════════════════════════════
+// FILTERS & SORT
+// ════════════════════════════════════════════════════════════════
+function setFilter(f){
+  activeF=f;
+  document.querySelectorAll('.fb').forEach(b=>{
+    b.className='fb';
+    if(b.dataset.f===f){
+      if(f==='bullish') b.classList.add('bon');
+      else if(f==='bearish') b.classList.add('eon');
+      else if(f==='neutral') b.classList.add('non');
+      else b.classList.add('on');
+    }
+  });
+  renderResults();
+}
+function setSortAndRender(v){ activeSort=v; renderResults(); }
+
+// ════════════════════════════════════════════════════════════════
+// SHARE WATCHLIST
+// ════════════════════════════════════════════════════════════════
+function shareWatchlist(name){
+  const tickers=(watchlists[name]||[]).join(',');
+  const url=location.origin+location.pathname+'?import='+encodeURIComponent(tickers)+'&name='+encodeURIComponent(name);
+  navigator.clipboard.writeText(url).then(()=>showToast('Share link copied!')).catch(()=>showToast('Could not copy link'));
+}
+
+// ════════════════════════════════════════════════════════════════
+// TOAST
+// ════════════════════════════════════════════════════════════════
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ════════════════════════════════════════════════════════════════
+// TIME AGO
+// ════════════════════════════════════════════════════════════════
+function timeAgo(dateStr){
+  if(!dateStr) return '';
+  const d=new Date(dateStr);
+  if(isNaN(d)) return '';
+  const diff=Math.floor((Date.now()-d)/1000);
+  if(diff<60) return diff+'s ago';
+  if(diff<3600) return Math.floor(diff/60)+'m ago';
+  if(diff<86400) return Math.floor(diff/3600)+'h ago';
+  return Math.floor(diff/86400)+'d ago';
+}
+
+</script>
+</body>
+</html>
