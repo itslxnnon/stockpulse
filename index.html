@@ -45,17 +45,12 @@ body{background:var(--bg);color:var(--t1);font-family:var(--fi);font-size:14px;l
 .logo-mark{width:30px;height:30px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-weight:800;font-size:12px;color:#000;flex-shrink:0;}
 .logo-text{font-family:var(--fh);font-size:16px;font-weight:700;color:var(--t1);}
 .logo-sub{font-size:9px;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;}
-
-/* Nav links */
 .nav-section{padding:10px 8px;}
-.nav-label{font-size:10px;font-weight:500;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;padding:6px 8px 4px;}
 .nav-link{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--r);font-size:13px;font-weight:500;color:var(--t2);cursor:pointer;transition:all .15s;border:none;background:none;width:100%;text-align:left;}
 .nav-link:hover{background:var(--bg3);color:var(--t1);}
 .nav-link.active{background:var(--bg3);color:var(--t1);}
 .nav-link .nav-icon{width:18px;text-align:center;font-size:14px;flex-shrink:0;}
 .nav-link .nav-badge{margin-left:auto;font-size:10px;background:var(--bg4);color:var(--t3);padding:1px 6px;border-radius:999px;}
-
-/* Watchlist list in sidebar */
 .sidebar-wl-list{flex:1;overflow-y:auto;padding:8px;}
 .wl-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--r);cursor:pointer;transition:all .15s;border:none;background:none;width:100%;text-align:left;}
 .wl-item:hover{background:var(--bg3);}
@@ -64,9 +59,6 @@ body{background:var(--bg);color:var(--t1);font-family:var(--fi);font-size:14px;l
 .wl-item-info{flex:1;min-width:0;}
 .wl-item-name{font-size:13px;font-weight:500;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .wl-item-tickers{font-size:11px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.wl-item-menu{background:none;border:none;color:var(--t3);cursor:pointer;font-size:16px;padding:0 2px;opacity:0;transition:opacity .15s;}
-.wl-item:hover .wl-item-menu{opacity:1;}
-
 .sidebar-bottom{padding:12px;border-top:1px solid var(--line);}
 .mkt-status{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--t3);padding:8px 10px;border-radius:var(--r);background:var(--bg3);}
 .mkt-dot{width:6px;height:6px;border-radius:50%;background:var(--t3);flex-shrink:0;}
@@ -76,8 +68,6 @@ body{background:var(--bg);color:var(--t1);font-family:var(--fi);font-size:14px;l
 
 /* ══ MAIN CONTENT ═══════════════════════════════════════════ */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-
-/* Top bar */
 .topbar{display:flex;align-items:center;gap:12px;padding:0 24px;height:56px;border-bottom:1px solid var(--line);flex-shrink:0;}
 .hamburger{display:none;background:none;border:none;color:var(--t2);cursor:pointer;font-size:20px;padding:4px;}
 .topbar-title{font-family:var(--fh);font-size:17px;font-weight:700;color:var(--t1);}
@@ -88,8 +78,6 @@ body{background:var(--bg);color:var(--t1);font-family:var(--fi);font-size:14px;l
 .tbtn.primary{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600;}
 .tbtn.primary:hover{opacity:.88;}
 .tbtn.on{color:var(--accent);border-color:rgba(0,200,150,.3);}
-
-/* Page container */
 .page{flex:1;overflow-y:auto;display:none;}
 .page.active{display:block;}
 
@@ -98,8 +86,6 @@ body{background:var(--bg);color:var(--t1);font-family:var(--fi);font-size:14px;l
 .page-hdr{margin-bottom:28px;}
 .page-hdr h1{font-family:var(--fh);font-size:24px;font-weight:700;color:var(--t1);margin-bottom:4px;}
 .page-hdr p{font-size:13px;color:var(--t2);}
-
-/* Create new watchlist card */
 .create-card{background:var(--bg2);border:1px solid var(--line2);border-radius:12px;padding:22px;margin-bottom:28px;}
 .create-card-title{font-size:13px;font-weight:600;color:var(--t1);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
 .create-card-title span{font-size:16px;}
@@ -107,37 +93,30 @@ body{background:var(--bg);color:var(--t1);font-family:var(--fi);font-size:14px;l
 .wl-name-inp{flex:1;background:var(--bg3);border:1px solid var(--line2);border-radius:var(--r);padding:10px 13px;font-size:13px;font-family:var(--fi);color:var(--t1);outline:none;transition:border-color .15s;}
 .wl-name-inp:focus{border-color:var(--accent);}
 .wl-name-inp::placeholder{color:var(--t3);}
-
-/* Ticker adder */
 .ticker-adder{display:flex;gap:8px;margin-bottom:12px;}
 .ticker-inp{flex:1;background:var(--bg3);border:1px solid var(--line2);border-radius:var(--r);padding:10px 13px;font-size:13px;font-family:var(--fi);color:var(--t1);outline:none;text-transform:uppercase;letter-spacing:.05em;transition:border-color .15s;}
 .ticker-inp:focus{border-color:var(--accent);}
 .ticker-inp::placeholder{text-transform:none;letter-spacing:0;color:var(--t3);}
 .btn-add-t{background:var(--bg3);border:1px solid var(--line2);border-radius:var(--r);padding:10px 16px;font-size:13px;font-family:var(--fi);color:var(--t2);cursor:pointer;white-space:nowrap;transition:all .15s;}
 .btn-add-t:hover{border-color:var(--accent);color:var(--accent);}
-
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;min-height:4px;}
 .chip{display:inline-flex;align-items:center;gap:5px;background:var(--bg4);border:1px solid var(--line2);border-radius:6px;padding:5px 10px 5px 12px;font-size:12px;font-weight:500;color:var(--t1);transition:border-color .15s;}
 .chip:hover{border-color:rgba(239,68,68,.35);}
 .chip-x{background:none;border:none;cursor:pointer;color:var(--t3);font-size:15px;line-height:1;padding:0;}
 .chip:hover .chip-x{color:var(--bear);}
-
 .btn-save-wl{background:var(--accent);color:#000;border:none;border-radius:var(--r);padding:10px 20px;font-size:13px;font-weight:600;font-family:var(--fi);cursor:pointer;transition:opacity .15s;}
 .btn-save-wl:hover{opacity:.85;}
 .btn-save-wl:disabled{opacity:.3;cursor:not-allowed;}
-
-/* Saved watchlists grid */
 .wl-grid-title{font-size:12px;font-weight:500;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;}
 .wl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;}
 .wl-card{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:18px;cursor:pointer;transition:all .2s;position:relative;}
 .wl-card:hover{border-color:var(--line2);background:var(--bg3);}
-.wl-card.selected{border-color:var(--accent);}
 .wl-card-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
 .wl-card-icon{width:36px;height:36px;background:var(--bg4);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;}
 .wl-card-menu{display:flex;gap:4px;opacity:0;transition:opacity .15s;}
 .wl-card:hover .wl-card-menu{opacity:1;}
 .wl-card-menu button{background:none;border:1px solid var(--line2);border-radius:5px;color:var(--t3);cursor:pointer;font-size:11px;padding:2px 7px;font-family:var(--fi);transition:all .15s;}
-.wl-card-menu button:hover{color:var(--t1);border-color:var(--line2);}
+.wl-card-menu button:hover{color:var(--t1);}
 .wl-card-menu button.del:hover{color:var(--bear);border-color:rgba(239,68,68,.3);}
 .wl-card-name{font-size:14px;font-weight:600;color:var(--t1);margin-bottom:4px;}
 .wl-card-tickers{font-size:12px;color:var(--t2);margin-bottom:14px;line-height:1.5;}
@@ -146,7 +125,7 @@ body{background:var(--bg);color:var(--t1);font-family:var(--fi);font-size:14px;l
 .btn-search-wl:hover{opacity:.85;}
 .wl-empty{text-align:center;padding:40px 20px;color:var(--t3);font-size:13px;}
 
-/* Edit modal overlay */
+/* Edit modal */
 .edit-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center;padding:20px;}
 .edit-overlay.open{display:flex;}
 .edit-modal{background:var(--bg2);border:1px solid var(--line2);border-radius:14px;padding:26px;width:100%;max-width:440px;}
@@ -158,15 +137,13 @@ body{background:var(--bg);color:var(--t1);font-family:var(--fi);font-size:14px;l
 
 /* ══ NEWS PAGE ══════════════════════════════════════════════ */
 .news-page{padding:28px 32px;}
-
-/* News topbar context */
-.news-context{display:flex;align-items:center;gap:10px;margin-bottom:24px;flex-wrap:wrap;}
+.news-context{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
 .news-wl-name{font-family:var(--fh);font-size:20px;font-weight:700;color:var(--t1);}
 .news-tickers{display:flex;gap:5px;flex-wrap:wrap;}
 .news-ticker-pill{font-size:11px;font-weight:500;padding:3px 9px;background:var(--bg3);border:1px solid var(--line2);border-radius:5px;color:var(--t1);}
 
-/* Filter + sort */
-.ctrl-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:22px;flex-wrap:wrap;}
+/* Global filter bar */
+.ctrl-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
 .fbar{display:flex;gap:5px;flex-wrap:wrap;}
 .fb{font-size:11px;padding:5px 12px;border-radius:999px;border:1px solid var(--line2);background:none;cursor:pointer;color:var(--t3);font-family:var(--fi);transition:all .15s;}
 .fb:hover{color:var(--t1);}
@@ -176,37 +153,65 @@ body{background:var(--bg);color:var(--t1);font-family:var(--fi);font-size:14px;l
 .fb.non{background:rgba(75,96,112,.12);color:var(--t2);border-color:var(--line2);}
 .ssort{background:var(--bg2);border:1px solid var(--line2);border-radius:var(--r);padding:5px 10px;font-size:11px;font-family:var(--fi);color:var(--t2);outline:none;cursor:pointer;}
 
-/* Progress bar */
+/* Progress + status */
 .prog-wrap{height:2px;background:var(--line);border-radius:2px;margin-bottom:6px;overflow:hidden;display:none;}
 .prog-wrap.show{display:block;}
 .prog-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .4s ease;width:0%;}
-.status-msg{font-size:11px;color:var(--t3);margin-bottom:18px;min-height:14px;}
+.status-msg{font-size:11px;color:var(--t3);margin-bottom:14px;min-height:14px;}
 
-/* ── Ticker block ── */
-.ticker-block{margin-bottom:40px;}
-.ticker-hdr{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--line);}
-.ticker-name{font-family:var(--fh);font-size:22px;font-weight:800;color:var(--t1);}
-.ticker-count{font-size:12px;color:var(--t3);}
-.ticker-acts{margin-left:auto;}
+/* ══ TICKER ACCORDION ════════════════════════════════════════
+   Each ticker is a self-contained collapsible card.
+   Clicking the header row expands/collapses the news panel.
+   The header always shows: ticker name, article count, sentiment
+   summary pills, and a refresh button.
+*/
+.acc-list{display:flex;flex-direction:column;gap:10px;}
+
+.acc-item{background:var(--bg2);border:1px solid var(--line);border-radius:12px;overflow:hidden;transition:border-color .2s;}
+.acc-item.open{border-color:var(--line2);}
+.acc-item.bull-dominant{border-left:3px solid var(--bull);}
+.acc-item.bear-dominant{border-left:3px solid var(--bear);}
+.acc-item.neutral-dominant{border-left:3px solid var(--neut);}
+
+/* Accordion header — always visible */
+.acc-hdr{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;user-select:none;transition:background .15s;}
+.acc-hdr:hover{background:var(--bg3);}
+
+.acc-ticker{font-family:var(--fh);font-size:20px;font-weight:800;color:var(--t1);min-width:72px;}
+.acc-count{font-size:12px;color:var(--t3);white-space:nowrap;}
+
+.acc-pills{display:flex;gap:5px;flex-wrap:wrap;flex:1;}
+.ap{font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px;}
+.ap-bull{background:rgba(34,197,94,.1);color:var(--bull);}
+.ap-bear{background:rgba(239,68,68,.1);color:var(--bear);}
+.ap-neut{background:rgba(75,96,112,.12);color:var(--t2);}
+.ap-time{background:var(--bg3);color:var(--t3);font-weight:400;}
+
+.acc-bar-wrap{width:80px;height:4px;border-radius:4px;overflow:hidden;background:var(--line);flex-shrink:0;display:flex;}
+.acc-bar-bull{background:var(--bull);height:100%;}
+.acc-bar-bear{background:var(--bear);height:100%;}
+.acc-bar-neut{background:var(--neut);height:100%;}
+
+.acc-actions{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0;}
 .tref-btn{background:none;border:1px solid var(--line);border-radius:6px;padding:4px 11px;font-size:11px;color:var(--t3);cursor:pointer;font-family:var(--fi);transition:all .15s;}
 .tref-btn:hover{border-color:var(--accent);color:var(--accent);}
+.acc-chevron{font-size:12px;color:var(--t3);transition:transform .22s;flex-shrink:0;}
+.acc-item.open .acc-chevron{transform:rotate(180deg);}
 
-/* Sentiment summary */
-.sent-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
-.sp{font-size:11px;font-weight:500;padding:3px 10px;border-radius:999px;}
-.sp-bull{background:rgba(34,197,94,.1);color:var(--bull);}
-.sp-bear{background:rgba(239,68,68,.1);color:var(--bear);}
-.sp-neut{background:rgba(75,96,112,.12);color:var(--t2);}
-.sp-time{background:var(--bg3);color:var(--t3);}
+/* Accordion body — hidden until open */
+.acc-body{display:none;border-top:1px solid var(--line);}
+.acc-item.open .acc-body{display:block;}
+.acc-inner{padding:18px;}
 
-.sent-bar{height:3px;border-radius:3px;overflow:hidden;display:flex;margin-bottom:20px;background:var(--line);}
+/* Sent bar inside accordion */
+.sent-bar{height:3px;border-radius:3px;overflow:hidden;display:flex;margin-bottom:18px;background:var(--line);}
 .sb-bull{background:var(--bull);transition:width .6s;}
 .sb-bear{background:var(--bear);transition:width .6s;}
 .sb-neut{background:var(--neut);transition:width .6s;}
 
-/* ── Deep-dive thesis ── */
-.thesis-block{background:var(--bg3);border:1px solid var(--line2);border-radius:10px;margin-bottom:20px;overflow:hidden;}
-.thesis-hdr{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none;transition:background .15s;}
+/* Deep-dive thesis */
+.thesis-block{background:var(--bg3);border:1px solid var(--line2);border-radius:10px;margin-bottom:18px;overflow:hidden;}
+.thesis-hdr{display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer;user-select:none;transition:background .15s;}
 .thesis-hdr:hover{background:var(--bg4);}
 .thesis-icon{width:28px;height:28px;background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.18);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
 .thesis-label{font-size:13px;font-weight:600;color:var(--t1);}
@@ -216,41 +221,48 @@ body{background:var(--bg);color:var(--t1);font-family:var(--fi);font-size:14px;l
 .thesis-body{display:none;padding:4px 16px 16px;}
 .thesis-body.open{display:block;}
 .thesis-body p{font-size:13px;color:var(--t1);line-height:1.8;margin-bottom:12px;}
-.thesis-body p strong{color:var(--t1);font-weight:600;}
 .thesis-body p:last-child{margin-bottom:0;}
 .thesis-loading{padding:14px 0;font-size:12px;color:var(--t3);display:flex;align-items:center;gap:8px;}
 
 /* ── News card ── */
-.card{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:10px;transition:border-color .15s;border-left-width:3px;}
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:15px 17px;margin-bottom:9px;transition:border-color .15s;border-left-width:3px;}
 .card:hover{border-color:var(--line2);}
 .card.bullish{border-left-color:var(--bull);}
 .card.bearish{border-left-color:var(--bear);}
 .card.neutral{border-left-color:var(--neut);}
-.card-meta{display:flex;align-items:center;gap:8px;margin-bottom:9px;flex-wrap:wrap;}
+.card-meta{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
 .sent-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px;text-transform:uppercase;letter-spacing:.04em;}
 .sent-badge.bullish{background:rgba(34,197,94,.1);color:var(--bull);}
 .sent-badge.bearish{background:rgba(239,68,68,.1);color:var(--bear);}
 .sent-badge.neutral{background:rgba(75,96,112,.12);color:var(--t2);}
 .card-src{font-size:11px;color:var(--t3);}
 .card-time{font-size:11px;color:var(--t3);}
-.card-title{font-size:14px;font-weight:500;color:var(--t1);line-height:1.5;margin-bottom:9px;}
+
+/* Headline display:
+   .card-title       = the translated (English) headline, shown prominently
+   .card-orig-title  = the original foreign headline, shown below in muted style
+   When article is English, only .card-title is rendered. */
+.card-title{font-size:14px;font-weight:500;color:var(--t1);line-height:1.5;margin-bottom:4px;}
 .card-title a{color:var(--t1);text-decoration:none;}
 .card-title a:hover{color:var(--accent);}
-.card-title.tr::before{content:'[EN] ';font-size:10px;color:var(--t3);font-weight:400;}
+.card-orig-title{font-size:12px;color:var(--t3);line-height:1.5;margin-bottom:8px;font-style:italic;}
+.card-orig-title a{color:var(--t3);text-decoration:none;}
+.card-orig-title a:hover{color:var(--t2);}
+.lang-tag{display:inline-block;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:1px 5px;border-radius:4px;background:rgba(245,158,11,.1);color:var(--gold);margin-right:5px;vertical-align:middle;}
+
 .analysis-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:3px;}
 .card-summary{font-size:13px;color:var(--t2);line-height:1.7;padding-top:8px;border-top:1px solid var(--line);}
 
-/* ── Skeleton ── */
+/* Skeleton */
 .skel{background:linear-gradient(90deg,var(--bg2) 25%,var(--bg3) 50%,var(--bg2) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:8px;}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.skel-hdr{height:22px;width:140px;margin-bottom:14px;}
-.skel-card{height:88px;margin-bottom:10px;}
+.skel-acc{height:58px;border-radius:12px;margin-bottom:10px;}
 
-/* ── Spinner ── */
+/* Spinner */
 .spin{display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.08);border-top-color:var(--t2);border-radius:50%;animation:sp .55s linear infinite;flex-shrink:0;}
 @keyframes sp{to{transform:rotate(360deg)}}
 
-/* ── Server config modal ── */
+/* Server config modal */
 .srv-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;align-items:center;justify-content:center;padding:20px;}
 .srv-overlay.open{display:flex;}
 .srv-modal{background:var(--bg2);border:1px solid var(--line2);border-radius:14px;padding:26px;width:100%;max-width:440px;}
@@ -279,16 +291,18 @@ code{background:var(--bg3);border:1px solid var(--line);border-radius:4px;paddin
 .srow select{background:var(--bg3);border:1px solid var(--line2);border-radius:7px;padding:5px 9px;font-size:12px;font-family:var(--fi);color:var(--t2);outline:none;}
 .danger-btn{width:100%;background:none;color:var(--bear);border:1px solid rgba(239,68,68,.2);border-radius:var(--r);padding:9px;font-size:12px;font-family:var(--fi);cursor:pointer;margin-top:12px;}
 
-/* ── Toast ── */
+/* Toast */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--bg2);border:1px solid var(--line2);border-radius:999px;padding:9px 18px;font-size:12px;color:var(--t1);z-index:400;opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-/* ── Mobile ── */
+/* Mobile */
 @media(max-width:768px){
   .sidebar{position:fixed;top:0;left:0;bottom:0;z-index:150;transform:translateX(-100%);box-shadow:4px 0 24px rgba(0,0,0,.4);}
   .sidebar.open{transform:translateX(0);}
   .hamburger{display:flex !important;}
   .news-page,.wl-page{padding:20px 16px;}
+  .acc-bar-wrap{display:none;}
+  .acc-pills{display:none;}
 }
 </style>
 </head>
@@ -370,7 +384,6 @@ code{background:var(--bg3);border:1px solid var(--line);border-radius:4px;paddin
 
   <!-- MAIN -->
   <div class="main">
-    <!-- TOP BAR -->
     <div class="topbar">
       <button class="hamburger" id="hamburger" onclick="toggleSidebar()">☰</button>
       <span class="topbar-title" id="topbarTitle">Watchlists</span>
@@ -388,22 +401,18 @@ code{background:var(--bg3);border:1px solid var(--line);border-radius:4px;paddin
           <h1>Watchlists</h1>
           <p>Create and manage your stock watchlists. Click "Search news" on any list to fetch the latest articles.</p>
         </div>
-
-        <!-- Create new -->
         <div class="create-card">
           <div class="create-card-title"><span>＋</span> Create new watchlist</div>
           <div class="wl-name-row">
             <input class="wl-name-inp" id="newWlName" placeholder="Watchlist name — e.g. My Portfolio, Tech Stocks…" maxlength="30"/>
           </div>
           <div class="ticker-adder">
-            <input class="ticker-inp" id="newTickerInp" type="text" placeholder="Add ticker — AAPL, TSLA, SIVE, UNH, LPK…" maxlength="12" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"/>
+            <input class="ticker-inp" id="newTickerInp" type="text" placeholder="Add ticker — AAPL, TSLA, NVDA…" maxlength="12" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"/>
             <button class="btn-add-t" onclick="newAddTicker()">+ Add</button>
           </div>
           <div class="chips" id="newChips"></div>
           <button class="btn-save-wl" id="saveWlBtn" onclick="saveNewWatchlist()" disabled>Save watchlist</button>
         </div>
-
-        <!-- Saved watchlists -->
         <div class="wl-grid-title">Your watchlists</div>
         <div class="wl-grid" id="wlGrid"></div>
       </div>
@@ -438,13 +447,13 @@ let watchlists = JSON.parse(localStorage.getItem('sp_watchlists') || '{}');
 let allGroups  = [];
 let activeF    = 'all';
 let activeSort = 'time';
-let currentWl  = null; // currently loaded watchlist name
+let currentWl  = null;
 let autoTimer  = null, autoSecs = 0, autoOn = false;
 let thesisCache = {};
+let openAccordions = new Set(); // tracks which tickers are expanded
 
 // new watchlist builder state
 let newTickers = [];
-// edit modal state
 let editingWl  = null;
 let editTickers = [];
 
@@ -452,7 +461,6 @@ let editTickers = [];
 // INIT
 // ════════════════════════════════════════════════════════════════
 (function init(){
-  // import shared watchlist from URL
   const p = new URLSearchParams(location.search);
   if (p.get('import')) {
     const name = p.get('name') || 'Imported';
@@ -487,12 +495,8 @@ function goPage(name){
   if(name!=='news') document.getElementById('topbarSub').textContent='';
   closeSidebar();
 }
-function toggleSidebar(){
-  document.getElementById('sidebar').classList.toggle('open');
-}
-function closeSidebar(){
-  if(window.innerWidth<=768) document.getElementById('sidebar').classList.remove('open');
-}
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); }
+function closeSidebar(){ if(window.innerWidth<=768) document.getElementById('sidebar').classList.remove('open'); }
 
 // ════════════════════════════════════════════════════════════════
 // SERVER MODAL
@@ -540,6 +544,7 @@ function clearAll(){
   if(!confirm('Clear all data?')) return;
   localStorage.clear();
   serverUrl=''; settings={refreshInterval:0,articleCount:10}; watchlists={}; allGroups=[]; newTickers=[];
+  openAccordions.clear();
   renderWlGrid(); renderSidebarWl(); renderNewChips(); updateSaveBtn();
   hideSrvModal(); showToast('All data cleared');
   document.getElementById('newsResults').innerHTML='';
@@ -586,16 +591,13 @@ function startAutoTimer(){
 // ════════════════════════════════════════════════════════════════
 function saveWatchlists(){ localStorage.setItem('sp_watchlists',JSON.stringify(watchlists)); }
 
-// ── New watchlist builder ──
 function newAddTicker(){
   const inp=document.getElementById('newTickerInp');
   const v=inp.value.trim().toUpperCase().replace(/^\$+/,'');
   if(!v||newTickers.includes(v)||v.length>12){inp.value='';return;}
   newTickers.push(v); inp.value=''; renderNewChips(); updateSaveBtn();
 }
-function newRemoveTicker(t){
-  newTickers=newTickers.filter(x=>x!==t); renderNewChips(); updateSaveBtn();
-}
+function newRemoveTicker(t){ newTickers=newTickers.filter(x=>x!==t); renderNewChips(); updateSaveBtn(); }
 function renderNewChips(){
   const c=document.getElementById('newChips');
   c.innerHTML=newTickers.length
@@ -611,7 +613,6 @@ function saveNewWatchlist(){
   if(!name||!newTickers.length) return;
   watchlists[name]=[...newTickers];
   saveWatchlists();
-  // Clear the builder — QOL: tickers removed after save
   newTickers=[];
   document.getElementById('newWlName').value='';
   renderNewChips(); updateSaveBtn();
@@ -625,8 +626,6 @@ function deleteWatchlist(name){
   if(currentWl===name){ currentWl=null; document.getElementById('newsResults').innerHTML=''; document.getElementById('newsContext').innerHTML=''; }
   showToast(`"${name}" deleted`);
 }
-
-// ── Edit watchlist ──
 function openEdit(name){
   editingWl=name;
   editTickers=[...(watchlists[name]||[])];
@@ -658,8 +657,6 @@ function saveEdit(){
   saveWatchlists(); renderWlGrid(); renderSidebarWl();
   closeEdit(); showToast(`"${newName}" updated`);
 }
-
-// ── Render watchlist grid (main page) ──
 function renderWlGrid(){
   const grid=document.getElementById('wlGrid');
   const names=Object.keys(watchlists);
@@ -686,8 +683,6 @@ function renderWlGrid(){
     </div>`;
   }).join('');
 }
-
-// ── Sidebar watchlist list ──
 function renderSidebarWl(){
   const c=document.getElementById('sidebarWlList');
   const names=Object.keys(watchlists);
@@ -702,13 +697,6 @@ function renderSidebarWl(){
   }).join('');
 }
 
-// Share watchlist link
-function shareWatchlist(name){
-  const tickers=(watchlists[name]||[]).join(',');
-  const u=location.origin+location.pathname+'?import='+tickers+'&name='+encodeURIComponent(name);
-  navigator.clipboard.writeText(u).then(()=>showToast('Share link copied!')).catch(()=>prompt('Copy:',u));
-}
-
 // ════════════════════════════════════════════════════════════════
 // SEARCH
 // ════════════════════════════════════════════════════════════════
@@ -720,13 +708,13 @@ async function searchWatchlist(name){
   thesisCache={};
   allGroups=[];
   activeF='all';
+  // Open all accordions by default on fresh search
+  openAccordions = new Set(tickers);
   goPage('news');
   renderSidebarWl();
 
-  // Update topbar
   document.getElementById('topbarSub').textContent=`— ${name}`;
 
-  // News context header
   const pillsHtml=tickers.map(t=>`<span class="news-ticker-pill">${t}</span>`).join('');
   document.getElementById('newsContext').innerHTML=`
     <div class="news-wl-name">${name}</div>
@@ -734,12 +722,10 @@ async function searchWatchlist(name){
     <button class="tbtn primary" style="margin-left:auto;" onclick="searchWatchlist('${name}')">↻ Refresh all</button>`;
 
   document.getElementById('ctrlBar').style.display='none';
+
+  // Show skeleton accordions while loading
   const results=document.getElementById('newsResults');
-  results.innerHTML=tickers.map(t=>`
-    <div class="ticker-block">
-      <div class="skel-hdr skel"></div>
-      ${[0,1,2].map(()=>`<div class="skel-card skel"></div>`).join('')}
-    </div>`).join('');
+  results.innerHTML=`<div class="acc-list">${tickers.map(()=>`<div class="skel-acc skel"></div>`).join('')}</div>`;
 
   const pb=document.getElementById('progBar'),pf=document.getElementById('progFill');
   const st=document.getElementById('statusMsg');
@@ -778,7 +764,8 @@ async function searchWatchlist(name){
   if(autoOn) startAutoTimer();
 }
 
-async function refreshTicker(ticker){
+async function refreshTicker(ticker, e){
+  if(e) e.stopPropagation(); // don't toggle accordion
   if(!serverUrl||!currentWl) return;
   const btn=document.querySelector(`[data-rt="${ticker}"]`);
   if(btn){btn.textContent='…';btn.disabled=true;}
@@ -790,31 +777,48 @@ async function refreshTicker(ticker){
     const idx=allGroups.findIndex(x=>x.ticker===ticker);
     const entry={...g,fetchedAt:Date.now()};
     if(idx>=0) allGroups[idx]=entry; else allGroups.push(entry);
+    // Keep accordion open after refresh
+    openAccordions.add(ticker);
     renderResults(); showToast(`${ticker} refreshed`);
   }catch(e){showToast(`Error: ${e.message}`);}
   if(btn){btn.textContent='↻ Refresh';btn.disabled=false;}
 }
 
 // ════════════════════════════════════════════════════════════════
+// ACCORDION TOGGLE
+// ════════════════════════════════════════════════════════════════
+function toggleAccordion(ticker){
+  if(openAccordions.has(ticker)){
+    openAccordions.delete(ticker);
+  } else {
+    openAccordions.add(ticker);
+  }
+  // Toggle DOM directly — fast, no full re-render
+  const item = document.getElementById('acc-'+ticker);
+  if(!item) return;
+  item.classList.toggle('open', openAccordions.has(ticker));
+}
+
+// ════════════════════════════════════════════════════════════════
 // THESIS
 // ════════════════════════════════════════════════════════════════
-async function generateThesis(ticker,articles){
+async function generateThesis(ticker, articles){
   if(thesisCache[ticker]) return thesisCache[ticker];
   try{
     const r=await fetch(`${serverUrl}/thesis?ticker=${encodeURIComponent(ticker)}`,{signal:AbortSignal.timeout(30000)});
     if(r.ok){const d=await r.json();if(d.thesis){thesisCache[ticker]=d.thesis;return d.thesis;}}
   }catch(e){}
-  // Client-side fallback
   const bull=articles.filter(a=>a.sentiment==='bullish');
   const bear=articles.filter(a=>a.sentiment==='bearish');
   const tot=articles.length;
   const dom=bull.length>bear.length?'bullish':bear.length>bull.length?'bearish':'mixed';
-  const thesis=`Current picture: ${ticker} is generating ${dom} news flow with ${bull.length} bullish and ${bear.length} bearish signals across ${tot} recent articles. ${dom==='bullish'?'The positive momentum suggests improving fundamentals or market positioning that the market has yet to fully price in.':dom==='bearish'?'The negative signals indicate headwinds that require close monitoring of upcoming catalysts.':'The mixed environment suggests the market is at a pivotal decision point.'}\n\nChain-effect outlook: ${dom==='bullish'?`If momentum continues for ${ticker}, several compounding effects could follow. Analyst upgrades typically trigger institutional buying, improving liquidity and reducing spreads. For smaller-cap names this snowball effect is powerful — improved visibility attracts index inclusion consideration, driving passive fund inflows. Confirmed revenue growth could support margin expansion as fixed costs spread over a larger base, creating a virtuous profitability cycle that attracts strategic partnerships or M&A interest.`:`Sustained negative newsflow for ${ticker} risks a self-reinforcing cycle. Analyst downgrades trigger institutional de-risking. Deteriorating sentiment raises the cost of capital, constraining operational flexibility. For smaller-cap names reduced liquidity amplifies price moves, often overshooting intrinsic value. Watch for management guidance revisions — these typically accelerate a de-rating.`}\n\nKey risks to monitor: ${dom==='bullish'?`Execution risk — the gap between positive news and delivered results is where most stories break down. Watch: (1) whether revenue growth translates to margin improvement; (2) sector rotation risk in macro shifts; (3) valuation stretch making the name vulnerable to any negative surprise.`:`Overshooting risk — markets often punish more than fundamentals warrant. Watch: (1) stabilisation signs indicating the worst is priced in; (2) management restructuring or asset disposals resetting the earnings base; (3) sector-wide recovery catalysts that could lift all boats regardless of company-specific issues.`}`;
+  const thesis=`Current picture: ${ticker} is generating ${dom} news flow with ${bull.length} bullish and ${bear.length} bearish signals across ${tot} recent articles.\n\nChain-effect outlook: ${dom==='bullish'?`Positive momentum for ${ticker} could trigger institutional buying, improved liquidity, and margin expansion — a virtuous cycle that attracts M&A interest.`:`Negative news for ${ticker} risks a self-reinforcing cycle of analyst downgrades, institutional de-risking, and rising cost of capital.`}\n\nKey risks to monitor: ${dom==='bullish'?`Execution risk — whether revenue growth translates to margin improvement; sector rotation risk; valuation stretch.`:`Overshooting risk — signs of stabilisation; management restructuring; sector-wide recovery catalysts.`}`;
   thesisCache[ticker]=thesis;
   return thesis;
 }
 
-async function toggleThesis(ticker,artsSafe){
+async function toggleThesis(ticker, artsSafe, e){
+  e.stopPropagation(); // don't toggle accordion
   const body=document.getElementById('tb-'+ticker);
   const hdr=document.getElementById('th-'+ticker);
   const isOpen=body.classList.contains('open');
@@ -840,7 +844,8 @@ function setSortAndRender(v){
 }
 
 // ════════════════════════════════════════════════════════════════
-// RENDER RESULTS
+// RENDER RESULTS  — accordion layout
+// Each ticker = isolated accordion card. No cross-ticker references.
 // ════════════════════════════════════════════════════════════════
 function renderResults(){
   const area=document.getElementById('newsResults');
@@ -861,77 +866,134 @@ function renderResults(){
     <button class="fb ${fc('bearish')}" onclick="setFilter('bearish')">▼ Bearish ${tBear}</button>
     <button class="fb ${fc('neutral')}" onclick="setFilter('neutral')">— Neutral ${tNeut}</button>`;
 
-  // Each ticker gets its own completely isolated block
-  area.innerHTML = allGroups.map(g=>{
-    const arts=g.articles||[];
-    const shown=activeF==='all'?arts:arts.filter(a=>a.sentiment===activeF);
-    const bull=arts.filter(a=>a.sentiment==='bullish').length;
-    const bear=arts.filter(a=>a.sentiment==='bearish').length;
-    const neut=arts.filter(a=>a.sentiment==='neutral').length;
-    const tot=arts.length;
-    const bp=tot?Math.round(bull/tot*100):0;
-    const rp=tot?Math.round(bear/tot*100):0;
-    const np=100-bp-rp;
-    const ago=g.fetchedAt?relTime(g.fetchedAt):'';
-    const artsSafe=encodeURIComponent(JSON.stringify(arts.slice(0,8)));
+  area.innerHTML = `<div class="acc-list">${allGroups.map(g => buildAccordionItem(g)).join('')}</div>`;
+}
 
-    let inner='';
+function buildAccordionItem(g){
+  const ticker = g.ticker;
+  const arts = g.articles || [];
+  // Filter articles for this ticker only — never reference other tickers
+  const shown = activeF === 'all' ? arts : arts.filter(a => a.sentiment === activeF);
+  const bull = arts.filter(a=>a.sentiment==='bullish').length;
+  const bear = arts.filter(a=>a.sentiment==='bearish').length;
+  const neut = arts.filter(a=>a.sentiment==='neutral').length;
+  const tot = arts.length;
+  const bp = tot ? Math.round(bull/tot*100) : 0;
+  const rp = tot ? Math.round(bear/tot*100) : 0;
+  const np = 100-bp-rp;
+  const ago = g.fetchedAt ? relTime(g.fetchedAt) : '';
+  const isOpen = openAccordions.has(ticker);
+  const dominant = bull > bear ? 'bull' : bear > bull ? 'bear' : 'neutral';
+  const artsSafe = encodeURIComponent(JSON.stringify(arts.slice(0,8)));
 
-    if(g.error){
-      inner=`<div style="background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.15);border-radius:var(--r);padding:12px 14px;font-size:13px;color:var(--bear);margin-bottom:12px;">⚠ ${g.error}</div>`;
-    } else if(!tot){
-      inner=`<div style="font-size:13px;color:var(--t3);padding:8px 0 18px;">No recent articles found for ${g.ticker}.</div>`;
-    } else {
-      inner+=`<div class="sent-row">
-        <span class="sp sp-bull">▲ ${bull} bullish</span>
-        <span class="sp sp-bear">▼ ${bear} bearish</span>
-        <span class="sp sp-neut">— ${neut} neutral</span>
-        ${ago?`<span class="sp sp-time">Updated ${ago}</span>`:''}
+  // ── Accordion header (always visible) ──
+  const header = `
+    <div class="acc-hdr" onclick="toggleAccordion('${ticker}')">
+      <div class="acc-ticker">${ticker}</div>
+      <div class="acc-count">${tot} article${tot!==1?'s':''}</div>
+      <div class="acc-pills">
+        ${bull>0?`<span class="ap ap-bull">▲ ${bull} bullish</span>`:''}
+        ${bear>0?`<span class="ap ap-bear">▼ ${bear} bearish</span>`:''}
+        ${neut>0?`<span class="ap ap-neut">— ${neut} neutral</span>`:''}
+        ${ago?`<span class="ap ap-time">Updated ${ago}</span>`:''}
       </div>
-      <div class="sent-bar">
-        <div class="sb-bull" style="width:${bp}%"></div>
-        <div class="sb-bear" style="width:${rp}%"></div>
-        <div class="sb-neut" style="width:${np}%"></div>
+      <div class="acc-bar-wrap">
+        <div class="acc-bar-bull" style="width:${bp}%"></div>
+        <div class="acc-bar-bear" style="width:${rp}%"></div>
+        <div class="acc-bar-neut" style="width:${np}%"></div>
       </div>
-      <div class="thesis-block">
-        <div class="thesis-hdr" id="th-${g.ticker}" onclick="toggleThesis('${g.ticker}','${artsSafe}')">
-          <div class="thesis-icon">🔭</div>
-          <div>
-            <div class="thesis-label">Deep-dive thesis</div>
-            <div class="thesis-sub">Chain-effect analysis · click to expand</div>
-          </div>
-          <span class="thesis-chev" id="tc-${g.ticker}">▾</span>
-        </div>
-        <div class="thesis-body" id="tb-${g.ticker}"></div>
-      </div>`;
-
-      if(!shown.length){
-        inner+=`<div style="font-size:13px;color:var(--t3);padding:6px 0;">No ${activeF} articles for ${g.ticker}.</div>`;
-      } else {
-        inner+=shown.map(a=>{
-          const sl=a.sentiment==='bullish'?'▲ bullish':a.sentiment==='bearish'?'▼ bearish':'— neutral';
-          return `<div class="card ${a.sentiment||'neutral'}">
-            <div class="card-meta">
-              <span class="sent-badge ${a.sentiment||'neutral'}">${sl}</span>
-              ${a.source?`<span class="card-src">${a.source}</span>`:''}
-              ${a.publishedAt?`<span class="card-time">· ${a.publishedAt}</span>`:''}
-            </div>
-            <div class="card-title ${a.translated?'tr':''}">${a.url?`<a href="${a.url}" target="_blank" rel="noopener noreferrer">${a.title}</a>`:a.title}</div>
-            ${a.summary?`<div class="card-summary"><div class="analysis-label">Analysis</div>${a.summary}</div>`:''}
-          </div>`;
-        }).join('');
-      }
-    }
-
-    return `<div class="ticker-block">
-      <div class="ticker-hdr">
-        <div class="ticker-name">${g.ticker}</div>
-        <div class="ticker-count">${tot} article${tot!==1?'s':''}</div>
-        <div class="ticker-acts"><button class="tref-btn" data-rt="${g.ticker}" onclick="refreshTicker('${g.ticker}')">↻ Refresh</button></div>
+      <div class="acc-actions">
+        <button class="tref-btn" data-rt="${ticker}" onclick="refreshTicker('${ticker}',event)">↻ Refresh</button>
       </div>
-      ${inner}
+      <span class="acc-chevron">${isOpen?'▲':'▼'}</span>
     </div>`;
-  }).join('');
+
+  // ── Accordion body (shown/hidden) ──
+  let bodyContent = '';
+
+  if(g.error){
+    bodyContent = `<div style="background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.15);border-radius:var(--r);padding:12px 14px;font-size:13px;color:var(--bear);">⚠ ${g.error}</div>`;
+  } else if(!tot){
+    bodyContent = `<div style="font-size:13px;color:var(--t3);padding:4px 0 10px;">No recent articles found for ${ticker}.</div>`;
+  } else {
+    // Sentiment bar
+    bodyContent += `<div class="sent-bar">
+      <div class="sb-bull" style="width:${bp}%"></div>
+      <div class="sb-bear" style="width:${rp}%"></div>
+      <div class="sb-neut" style="width:${np}%"></div>
+    </div>`;
+
+    // Deep-dive thesis
+    bodyContent += `<div class="thesis-block">
+      <div class="thesis-hdr" id="th-${ticker}" onclick="toggleThesis('${ticker}','${artsSafe}',event)">
+        <div class="thesis-icon">🔭</div>
+        <div>
+          <div class="thesis-label">Deep-dive thesis</div>
+          <div class="thesis-sub">Chain-effect analysis · click to expand</div>
+        </div>
+        <span class="thesis-chev">▾</span>
+      </div>
+      <div class="thesis-body" id="tb-${ticker}"></div>
+    </div>`;
+
+    // News cards — ONLY articles for this ticker
+    if(!shown.length){
+      bodyContent += `<div style="font-size:13px;color:var(--t3);padding:4px 0;">No ${activeF} articles for ${ticker}.</div>`;
+    } else {
+      bodyContent += shown.map(a => buildCard(a)).join('');
+    }
+  }
+
+  const body = `<div class="acc-body"><div class="acc-inner">${bodyContent}</div></div>`;
+
+  return `<div class="acc-item ${dominant}-dominant${isOpen?' open':''}" id="acc-${ticker}">${header}${body}</div>`;
+}
+
+// ── Build a single news card ──
+// For foreign articles: shows original title + translated English title below
+function buildCard(a){
+  const sl = a.sentiment==='bullish'?'▲ bullish':a.sentiment==='bearish'?'▼ bearish':'— neutral';
+  const langMap = {de:'DE',fr:'FR',it:'IT',es:'ES',nl:'NL',pl:'PL',ja:'JA',zh:'ZH'};
+  const langLabel = (a.lang && a.lang!=='en' && langMap[a.lang]) ? langMap[a.lang] : null;
+
+  // Determine what to show:
+  // - If English: show title once as main headline
+  // - If foreign: show translatedTitle (English) as main headline,
+  //               then original title below in muted italic
+  let headlineHtml;
+  if(a.translatedTitle){
+    // Foreign article with translation
+    const mainLink = a.url
+      ? `<a href="${a.url}" target="_blank" rel="noopener noreferrer">${escHtml(a.translatedTitle)}</a>`
+      : escHtml(a.translatedTitle);
+    const origLink = a.url
+      ? `<a href="${a.url}" target="_blank" rel="noopener noreferrer">${escHtml(a.title)}</a>`
+      : escHtml(a.title);
+    headlineHtml = `
+      <div class="card-title">${mainLink}</div>
+      <div class="card-orig-title">${langLabel?`<span class="lang-tag">${langLabel}</span>`:''} ${origLink}</div>`;
+  } else {
+    // English article (or untranslatable) — show original only
+    const mainLink = a.url
+      ? `<a href="${a.url}" target="_blank" rel="noopener noreferrer">${escHtml(a.title)}</a>`
+      : escHtml(a.title);
+    headlineHtml = `<div class="card-title">${mainLink}</div>`;
+  }
+
+  return `<div class="card ${a.sentiment||'neutral'}">
+    <div class="card-meta">
+      <span class="sent-badge ${a.sentiment||'neutral'}">${sl}</span>
+      ${a.source?`<span class="card-src">${escHtml(a.source)}</span>`:''}
+      ${a.publishedAt?`<span class="card-time">· ${a.publishedAt}</span>`:''}
+    </div>
+    ${headlineHtml}
+    ${a.summary?`<div class="card-summary"><div class="analysis-label">Analysis</div>${escHtml(a.summary)}</div>`:''}
+  </div>`;
+}
+
+function escHtml(s){
+  if(!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 // ════════════════════════════════════════════════════════════════
